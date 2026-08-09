@@ -284,6 +284,28 @@
       .help-button { right: 14px; bottom: 14px; padding: 11px 15px; font-size: 15px; }
     }
   </style>
+
+  <style>
+    .security-copy {
+      font-size: 14px;
+      color: #555a62;
+      line-height: 1.45;
+      margin: 0 0 16px;
+      font-weight: 600;
+    }
+    .link-inline {
+      margin-top: 12px;
+      border: 0;
+      background: transparent;
+      color: #007a78;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  </style>
+
 </head>
 <body>
   <main class="page">
@@ -347,6 +369,27 @@
           <button type="submit" class="btn-submit active" id="loginBtn">Iniciar sesión</button>
           <p class="helper-text" id="passwordMsg"></p>
         </div>
+
+        <div id="stepCode" class="form-step hidden">
+          <button type="button" class="back-link" id="codeBackBtn">← Cambiar contraseña</button>
+          <p class="security-copy">Hemos enviado un código de 6 dígitos al correo autorizado.</p>
+
+          <div class="input-group">
+            <label for="codeInput" class="sr-only">Código de verificación</label>
+            <input type="text" id="codeInput" name="codeInput" placeholder="Código de 6 dígitos" inputmode="numeric" maxlength="6" autocomplete="one-time-code" />
+            <span class="input-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <rect x="4" y="5" width="16" height="14" rx="2" stroke="currentColor" stroke-width="1.8"/>
+                <path d="M7 9h10M7 13h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </span>
+          </div>
+
+          <button type="button" class="btn-submit active" id="verifyCodeBtn">Verificar código</button>
+          <button type="button" class="link-inline" id="resendCodeBtn">Reenviar código</button>
+          <p class="helper-text" id="codeMsg"></p>
+        </div>
+
       </form>
 
       <p class="register-text">
@@ -369,16 +412,31 @@
     const AUTH_EMAIL = "reservas@mycuscotrip.com";
     const AUTH_PASSWORD = "MyCusco2021*";
 
+    /*
+      Coloque aquí la URL /exec del Google Apps Script publicado como Web App.
+      Mientras esté vacío, el sistema usará modo demo local y mostrará el código en consola.
+    */
+    const GAS_2FA_ENDPOINT = "";
+
     const emailInput = document.getElementById("email");
     const passwordInput = document.getElementById("password");
+    const codeInput = document.getElementById("codeInput");
     const continueBtn = document.getElementById("continueBtn");
     const backBtn = document.getElementById("backBtn");
+    const codeBackBtn = document.getElementById("codeBackBtn");
+    const verifyCodeBtn = document.getElementById("verifyCodeBtn");
+    const resendCodeBtn = document.getElementById("resendCodeBtn");
     const stepEmail = document.getElementById("stepEmail");
     const loadingStep = document.getElementById("loadingStep");
     const stepPassword = document.getElementById("stepPassword");
+    const stepCode = document.getElementById("stepCode");
     const emailMsg = document.getElementById("emailMsg");
     const passwordMsg = document.getElementById("passwordMsg");
+    const codeMsg = document.getElementById("codeMsg");
     const loginForm = document.getElementById("loginForm");
+
+    let localDemoCode = "";
+    let pendingEmail = "";
 
     function validateEmail(value) {
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
@@ -388,24 +446,76 @@
       continueBtn.classList.toggle("active", emailInput.value.trim() !== "");
     }
 
-    function showEmailStep() {
+    function hideAllSteps() {
+      stepEmail.classList.add("hidden");
       loadingStep.classList.add("hidden");
       stepPassword.classList.add("hidden");
+      stepCode.classList.add("hidden");
+    }
+
+    function showEmailStep() {
+      hideAllSteps();
       stepEmail.classList.remove("hidden");
       emailInput.focus();
     }
 
     function showLoadingStep() {
-      stepEmail.classList.add("hidden");
-      stepPassword.classList.add("hidden");
+      hideAllSteps();
       loadingStep.classList.remove("hidden");
     }
 
     function showPasswordStep() {
-      loadingStep.classList.add("hidden");
-      stepEmail.classList.add("hidden");
+      hideAllSteps();
       stepPassword.classList.remove("hidden");
       passwordInput.focus();
+    }
+
+    function showCodeStep() {
+      hideAllSteps();
+      stepCode.classList.remove("hidden");
+      codeInput.value = "";
+      codeInput.focus();
+    }
+
+    function generateLocalDemoCode() {
+      localDemoCode = String(Math.floor(100000 + Math.random() * 900000));
+      console.log("Código demo de acceso:", localDemoCode);
+      return localDemoCode;
+    }
+
+    async function requestAccessCode(email) {
+      pendingEmail = email;
+
+      if (!GAS_2FA_ENDPOINT) {
+        generateLocalDemoCode();
+        return { ok: true, demo: true };
+      }
+
+      const response = await fetch(GAS_2FA_ENDPOINT, {
+        method: "POST",
+        mode: "cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ action: "sendCode", email })
+      });
+
+      const data = await response.json();
+      if (!data.ok) throw new Error(data.message || "No se pudo enviar el código.");
+      return data;
+    }
+
+    async function verifyAccessCode(email, code) {
+      if (!GAS_2FA_ENDPOINT) {
+        return { ok: code === localDemoCode };
+      }
+
+      const response = await fetch(GAS_2FA_ENDPOINT, {
+        method: "POST",
+        mode: "cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ action: "verifyCode", email, code })
+      });
+
+      return await response.json();
     }
 
     emailInput.addEventListener("input", () => {
@@ -416,6 +526,12 @@
     passwordInput.addEventListener("input", () => {
       passwordMsg.textContent = "";
       passwordMsg.classList.remove("success");
+    });
+
+    codeInput?.addEventListener("input", () => {
+      codeInput.value = codeInput.value.replace(/\D/g, "").slice(0, 6);
+      codeMsg.textContent = "";
+      codeMsg.classList.remove("success");
     });
 
     continueBtn.addEventListener("click", () => {
@@ -444,7 +560,24 @@
       showEmailStep();
     });
 
-    loginForm.addEventListener("submit", (e) => {
+    codeBackBtn.addEventListener("click", () => {
+      codeMsg.textContent = "";
+      showPasswordStep();
+    });
+
+    resendCodeBtn.addEventListener("click", async () => {
+      codeMsg.textContent = "Enviando nuevo código...";
+      codeMsg.classList.remove("success");
+      try {
+        await requestAccessCode(pendingEmail || AUTH_EMAIL);
+        codeMsg.textContent = GAS_2FA_ENDPOINT ? "Nuevo código enviado." : "Modo demo: revise la consola del navegador.";
+        codeMsg.classList.add("success");
+      } catch (error) {
+        codeMsg.textContent = error.message || "No se pudo reenviar el código.";
+      }
+    });
+
+    loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
 
       const email = emailInput.value.trim().toLowerCase();
@@ -457,19 +590,55 @@
       }
 
       if (email === AUTH_EMAIL && password === AUTH_PASSWORD) {
-        passwordMsg.textContent = "Acceso correcto. Redirigiendo...";
+        passwordMsg.textContent = "Credenciales correctas. Enviando código...";
         passwordMsg.classList.add("success");
-        sessionStorage.setItem("viatorSupplierLoggedIn", "true");
-        sessionStorage.setItem("viatorSupplierUser", AUTH_EMAIL);
-        setTimeout(() => {
-          window.location.href = "dashboard.html";
-        }, 550);
+
+        try {
+          await requestAccessCode(email);
+          showCodeStep();
+          codeMsg.textContent = GAS_2FA_ENDPOINT ? "Ingrese el código enviado a su correo." : "Modo demo: revise la consola del navegador para ver el código.";
+          codeMsg.classList.toggle("success", !GAS_2FA_ENDPOINT);
+        } catch (error) {
+          passwordMsg.classList.remove("success");
+          passwordMsg.textContent = error.message || "No se pudo enviar el código de verificación.";
+        }
         return;
       }
 
       passwordMsg.classList.remove("success");
       passwordMsg.textContent = "Correo o contraseña incorrectos. Revise las credenciales e inténtelo nuevamente.";
       passwordInput.focus();
+    });
+
+    verifyCodeBtn.addEventListener("click", async () => {
+      const code = codeInput.value.trim();
+
+      if (!/^\d{6}$/.test(code)) {
+        codeMsg.textContent = "Ingrese el código de 6 dígitos.";
+        codeInput.focus();
+        return;
+      }
+
+      codeMsg.textContent = "Verificando código...";
+      codeMsg.classList.remove("success");
+
+      try {
+        const result = await verifyAccessCode(pendingEmail || AUTH_EMAIL, code);
+        if (!result.ok) {
+          codeMsg.textContent = result.message || "Código incorrecto o vencido.";
+          codeInput.focus();
+          return;
+        }
+
+        codeMsg.textContent = "Acceso verificado. Redirigiendo...";
+        codeMsg.classList.add("success");
+        sessionStorage.setItem("viatorSupplierLoggedIn", "true");
+        sessionStorage.setItem("viatorSupplierUser", AUTH_EMAIL);
+        sessionStorage.setItem("viatorSupplierLoginAt", String(Date.now()));
+        setTimeout(() => { window.location.href = "dashboard.html"; }, 550);
+      } catch (error) {
+        codeMsg.textContent = error.message || "No se pudo verificar el código.";
+      }
     });
 
     updateEmailButtonState();
