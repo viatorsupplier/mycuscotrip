@@ -713,6 +713,45 @@
     .solid-btn.danger-light { background:#fff; color:var(--primary); border:1px solid var(--primary); }
     @media (max-width:980px) { .market-grid { grid-template-columns:1fr; } .market-toolbar { grid-template-columns:1fr; } }
 
+
+    /* Ajuste profesional de escala visual */
+    :root { --header-h: 58px; }
+    .topbar { padding: 0 20px; gap: 22px; }
+    .logo { font-size: 34px; min-width: 112px; }
+    .nav { gap: 18px; }
+    .nav button, .account-btn, .help-link { font-size: 15px; }
+    .layout { max-width: 1360px; padding: 34px 28px 72px; }
+    .page-title { font-size: 36px !important; }
+    .wide-card { padding: 26px 30px; }
+    .booking-card { padding: 22px; margin-top: 18px; }
+    .booking-card h2 { font-size: 22px; }
+    .subtitle { font-size: 17px; }
+    .details-columns { font-size: 15px; }
+    .finance-card { padding: 24px; }
+    .finance-card .money { font-size: 34px; }
+    .payments-table { font-size: 15px; }
+    .payments-table td { padding: 13px 14px; }
+    .payments-table td.amount { font-size: 16px; }
+
+    .pro-filters { grid-template-columns: 190px 180px 180px 120px; align-items: center; }
+    .filter-input { font-family: inherit; outline: none; }
+    .date-field { gap: 8px; padding: 0 12px; }
+    .date-field input { width: 100%; border: 0; background: transparent; font: inherit; color: #4e535b; outline: 0; }
+    .search-btn { height: 54px; border: 0; border-radius: 3px; background: var(--primary); color: #fff; font-weight: 900; cursor: pointer; }
+    .quick button { border: 0; background: transparent; font: inherit; color: var(--primary); font-weight: 800; cursor: pointer; padding: 0; }
+    .quick .clear-filters { margin-left: auto; color: var(--primary); font-weight: 800; }
+
+    .ui-icon { display: inline-block; width: 18px; height: 18px; background: currentColor; color: var(--primary-dark); vertical-align: -3px; flex: 0 0 auto; }
+    .icon-calendar { -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 2h2v3h6V2h2v3h3a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h3V2Zm13 8H4v10h16V10ZM4 8h16V7H4v1Z'/%3E%3C/svg%3E") center/contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 2h2v3h6V2h2v3h3a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h3V2Zm13 8H4v10h16V10ZM4 8h16V7H4v1Z'/%3E%3C/svg%3E") center/contain no-repeat; }
+    .icon-users { -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M16 11a4 4 0 1 0-3.7-5.5A5 5 0 0 1 13 8c0 1.1-.35 2.12-.95 2.95A4 4 0 0 0 16 11Zm-8 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-3.3 0-6 1.67-6 3.73V20h12v-2.27C14 15.67 11.3 14 8 14Zm8-1c-.72 0-1.4.08-2.03.23 1.24.9 2.03 2.1 2.03 3.5V20h6v-2.27C22 15.67 19.3 13 16 13Z'/%3E%3C/svg%3E") center/contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M16 11a4 4 0 1 0-3.7-5.5A5 5 0 0 1 13 8c0 1.1-.35 2.12-.95 2.95A4 4 0 0 0 16 11Zm-8 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-3.3 0-6 1.67-6 3.73V20h12v-2.27C14 15.67 11.3 14 8 14Zm8-1c-.72 0-1.4.08-2.03.23 1.24.9 2.03 2.1 2.03 3.5V20h6v-2.27C22 15.67 19.3 13 16 13Z'/%3E%3C/svg%3E") center/contain no-repeat; }
+    .icon-person { -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2c-4.42 0-8 2.24-8 5v3h16v-3c0-2.76-3.58-5-8-5Z'/%3E%3C/svg%3E") center/contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2c-4.42 0-8 2.24-8 5v3h16v-3c0-2.76-3.58-5-8-5Z'/%3E%3C/svg%3E") center/contain no-repeat; }
+    .icon-filter { -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 5h18l-7 8v5l-4 2v-7L3 5Z'/%3E%3C/svg%3E") center/contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 5h18l-7 8v5l-4 2v-7L3 5Z'/%3E%3C/svg%3E") center/contain no-repeat; }
+    .icon-market { width: 38px; height: 38px; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 4h16l1 5v2a3 3 0 0 1-5 2.24A3 3 0 0 1 12 13a3 3 0 0 1-4 .24A3 3 0 0 1 3 11V9l1-5Zm1 10.8A4.98 4.98 0 0 0 8 14c1.2 0 2.3-.43 3.16-1.15.24.1.52.15.84.15s.6-.05.84-.15A4.96 4.96 0 0 0 16 14c1.1 0 2.13-.36 3-.96V20H5v-5.2Z'/%3E%3C/svg%3E") center/contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 4h16l1 5v2a3 3 0 0 1-5 2.24A3 3 0 0 1 12 13a3 3 0 0 1-4 .24A3 3 0 0 1 3 11V9l1-5Zm1 10.8A4.98 4.98 0 0 0 8 14c1.2 0 2.3-.43 3.16-1.15.24.1.52.15.84.15s.6-.05.84-.15A4.96 4.96 0 0 0 16 14c1.1 0 2.13-.36 3-.96V20H5v-5.2Z'/%3E%3C/svg%3E") center/contain no-repeat; }
+    .icon-only { display:flex; align-items:center; justify-content:center; }
+    .booking-date-label, .market-line { display: inline-flex; align-items: center; gap: 7px; }
+    .market-meta { display: grid; gap: 6px; }
+    @media (max-width: 980px) { .pro-filters { grid-template-columns: 1fr; } }
+
   </style>
 </head>
 <body>
@@ -789,11 +828,13 @@
       <div class="section-shell">
         <div>
           <h1 class="page-title">Reservas</h1>
-          <div class="filters">
-            <div class="field">BR-por ejemplo: 91</div>
-            <div class="field">📅 &nbsp; 22 jun 2026 &nbsp;&nbsp;&nbsp; | &nbsp; 📅 &nbsp; A</div>
+          <div class="filters pro-filters">
+            <input class="field filter-input" id="bookingCodeFilter" type="text" placeholder="BR- por ejemplo: 1507" />
+            <label class="field date-field"><span class="ui-icon icon-calendar"></span><input id="bookingStartDate" type="date" value="2026-06-22" /></label>
+            <label class="field date-field"><span class="ui-icon icon-calendar"></span><input id="bookingEndDate" type="date" /></label>
+            <button class="solid-btn search-btn" id="bookingSearchBtn" type="button">Buscar</button>
             <div class="select-like green-select">Estado de la reserva (Todos) (<span id="bookingCount">35</span>)⌄</div>
-            <div class="field">Lead traveler</div>
+            <input class="field filter-input" id="bookingTravelerFilter" type="text" placeholder="Lead traveler" />
             <div class="select-like" style="grid-column: span 2;">Todos los productos (30)<span>⌄</span></div>
             <select class="select-like booking-sort" id="bookingSort" aria-label="Ordenar reservas">
               <option value="asc">Más antiguas primero</option>
@@ -801,7 +842,7 @@
             </select>
           </div>
 
-          <div class="quick">⚱️ Filtros rápidos: <a href="#">Hoy</a> | <a href="#">Mañana</a> | <a href="#">Próximos 7 días</a><span class="clear-filters">✕ Borrar todos los filtros</span></div>
+          <div class="quick"><span class="ui-icon icon-filter"></span><b>Filtros rápidos:</b> <button type="button" class="quick-filter" data-range="today">Hoy</button> <span>|</span> <button type="button" class="quick-filter" data-range="tomorrow">Mañana</button> <span>|</span> <button type="button" class="quick-filter" data-range="7days">Próximos 7 días</button><button type="button" class="clear-filters" id="clearBookingFilters">✕ Borrar todos los filtros</button></div>
 
           <div id="bookingsList" class="bookings-list"></div>
         </div>
@@ -945,32 +986,33 @@
     </section>
 
 
+
     <section class="page-section" data-section="finanzas">
       <h1 class="page-title">Finanzas</h1>
-      <div class="wide-card success-alert" style="margin-bottom:26px;">
+      <div class="wide-card success-alert" style="margin-bottom:22px;">
         <div class="big-icon">✓</div>
-        <div><h2>Pagos y reportes listos</h2><p>Historial de pagos actualizado con montos reales de las reservas cargadas en el panel.</p></div>
+        <div><h2>Pagos y reportes listos</h2><p>Historial actualizado por código de orden de pago.</p></div>
       </div>
       <div class="finance-grid">
-        <div class="finance-card"><h3>Pagos recibidos</h3><div class="money">US$ 12,009.40</div><p>Fechas ya vencidas al 08 de agosto de 2026.</p></div>
-        <div class="finance-card"><h3>En proceso</h3><div class="money">US$ 6,519.00</div><p>Incluye liquidaciones pendientes o retenidas para retiro.</p></div>
-        <div class="finance-card"><h3>Pagos programados</h3><div class="money">US$ 56,849.92</div><p>Fechas futuras según cronograma de cobros.</p></div>
+        <div class="finance-card"><h3>Pagos recibidos</h3><div class="money">US$ 17,231.30</div><p>Incluye el anticipo recibido de la reserva grande.</p></div>
+        <div class="finance-card"><h3>En proceso</h3><div class="money">US$ 6,519.00</div><p>Liquidaciones pendientes de liberación o retiro.</p></div>
+        <div class="finance-card"><h3>Pagos programados</h3><div class="money">US$ 56,849.92</div><p>Fechas futuras según cronograma.</p></div>
       </div>
 
       <div class="payments-panel">
         <div class="payments-head">
           <div>
             <h2>Historial de pagos</h2>
-            <p>Reservas confirmadas ordenadas por fecha de pago. La Reserva 11 figura en proceso.</p>
+            <p>Pagos separados por orden. Las fechas futuras figuran como programadas.</p>
           </div>
-          <div class="payments-summary">Total listado: US$ 75,378.32</div>
+          <div class="payments-summary">Total listado: US$ 80,600.22</div>
         </div>
         <div class="payments-table-wrap">
           <table class="payments-table" aria-label="Historial de pagos">
             <thead>
               <tr>
+                <th>Orden de pago</th>
                 <th>Reserva</th>
-                <th>Viajero principal</th>
                 <th>Fecha de pago</th>
                 <th>Estado</th>
                 <th style="text-align:right;">Importe</th>
@@ -978,211 +1020,218 @@
             </thead>
             <tbody>
               <tr>
+                <td>OP-2026-0001</td>
                 <td>BR-150422311</td>
-                <td>Jennifer Salgado</td>
                 <td>05 may 2026</td>
                 <td><span class="payment-status paid">Pagado</span></td>
                 <td class="amount">US$ 939.80</td>
               </tr>
               <tr>
+                <td>OP-2026-0002</td>
                 <td>BR-150424314</td>
-                <td>Jianhua Wang</td>
                 <td>12 may 2026</td>
                 <td><span class="payment-status paid">Pagado</span></td>
                 <td class="amount">US$ 1,191.60</td>
               </tr>
               <tr>
+                <td>OP-2026-0003</td>
                 <td>BR-847877112</td>
-                <td>Sylvain Le Berre</td>
                 <td>19 may 2026</td>
                 <td><span class="payment-status paid">Pagado</span></td>
                 <td class="amount">US$ 1,139.00</td>
               </tr>
               <tr>
+                <td>OP-2026-0004</td>
                 <td>BR-931883800</td>
-                <td>John Messerschmidt</td>
                 <td>02 jun 2026</td>
                 <td><span class="payment-status paid">Pagado</span></td>
                 <td class="amount">US$ 1,251.00</td>
               </tr>
               <tr>
+                <td>OP-2026-0005</td>
                 <td>BR-842618094</td>
-                <td>Jessyca Lefebvre Hamelin</td>
                 <td>09 jun 2026</td>
                 <td><span class="payment-status paid">Pagado</span></td>
                 <td class="amount">US$ 1,199.80</td>
               </tr>
               <tr>
+                <td>OP-2026-0006</td>
                 <td>BR-860808170</td>
-                <td>Nelly Lycurgue</td>
                 <td>16 jun 2026</td>
                 <td><span class="payment-status paid">Pagado</span></td>
                 <td class="amount">US$ 1,419.80</td>
               </tr>
               <tr>
+                <td>OP-2026-0007</td>
                 <td>BR-150530910</td>
-                <td>Mariana Arango Franco</td>
                 <td>En proceso</td>
                 <td><span class="payment-status process">En proceso</span></td>
                 <td class="amount">US$ 5,039.10</td>
               </tr>
               <tr>
+                <td>OP-2026-0008</td>
                 <td>BR-150629318</td>
-                <td>Oliver Bennett</td>
                 <td>21 jul 2026</td>
                 <td><span class="payment-status paid">Pagado</span></td>
                 <td class="amount">US$ 2,399.60</td>
               </tr>
               <tr>
+                <td>OP-2026-0009</td>
+                <td>BR-150727625</td>
+                <td>22 jul 2026</td>
+                <td><span class="payment-status paid">Pagado</span></td>
+                <td class="amount">US$ 5,221.90</td>
+              </tr>
+              <tr>
+                <td>OP-2026-0010</td>
                 <td>BR-150707519</td>
-                <td>Camille Dubois</td>
                 <td>28 jul 2026</td>
-                <td><span class="payment-status paid">Pagado / PayPal</span></td>
+                <td><span class="payment-status paid">Pagado</span></td>
                 <td class="amount">US$ 1,189.00</td>
               </tr>
               <tr>
+                <td>OP-2026-0011</td>
                 <td>BR-150714775</td>
-                <td>Johannes Schneider</td>
                 <td>05 ago 2026</td>
                 <td><span class="payment-status paid">Pagado</span></td>
                 <td class="amount">US$ 1,279.80</td>
               </tr>
               <tr>
+                <td>OP-2026-0012</td>
                 <td>BR-150703442</td>
-                <td>Renata Oliveira</td>
                 <td>12 ago 2026</td>
                 <td><span class="payment-status process">En proceso</span></td>
                 <td class="amount">US$ 1,479.90</td>
               </tr>
               <tr>
+                <td>OP-2026-0013</td>
                 <td>BR-150722116</td>
-                <td>Francisca Rojas</td>
                 <td>12 ago 2026</td>
                 <td><span class="payment-status scheduled">Programado</span></td>
                 <td class="amount">US$ 1,089.80</td>
               </tr>
               <tr>
+                <td>OP-2026-0014</td>
                 <td>BR-150718902</td>
-                <td>Madison Thompson</td>
                 <td>19 ago 2026</td>
                 <td><span class="payment-status scheduled">Programado</span></td>
                 <td class="amount">US$ 2,459.60</td>
               </tr>
               <tr>
+                <td>OP-2026-0015</td>
                 <td>BR-150710682</td>
-                <td>Melissa Hughes</td>
                 <td>19 ago 2026</td>
                 <td><span class="payment-status scheduled">Programado</span></td>
                 <td class="amount">US$ 1,922.70</td>
               </tr>
               <tr>
+                <td>OP-2026-0016</td>
                 <td>BR-150727625</td>
-                <td>Rebecca Anderson</td>
                 <td>25 ago 2026</td>
                 <td><span class="payment-status scheduled">Programado</span></td>
                 <td class="amount">US$ 7,832.82</td>
               </tr>
               <tr>
+                <td>OP-2026-0017</td>
                 <td>BR-150805731</td>
-                <td>Hiroshi Tanaka</td>
                 <td>02 sep 2026</td>
                 <td><span class="payment-status scheduled">Programado</span></td>
                 <td class="amount">US$ 1,506.70</td>
               </tr>
               <tr>
+                <td>OP-2026-0018</td>
                 <td>BR-150807642</td>
-                <td>Charlotte Evans</td>
                 <td>09 sep 2026</td>
                 <td><span class="payment-status scheduled">Programado</span></td>
                 <td class="amount">US$ 1,209.80</td>
               </tr>
               <tr>
+                <td>OP-2026-0019</td>
                 <td>BR-150809853</td>
-                <td>Satoshi Nakamura</td>
                 <td>09 sep 2026</td>
                 <td><span class="payment-status scheduled">Programado</span></td>
                 <td class="amount">US$ 3,174.50</td>
               </tr>
               <tr>
+                <td>OP-2026-0020</td>
                 <td>BR-150810734</td>
-                <td>Olivia Anderson</td>
                 <td>09 sep 2026</td>
                 <td><span class="payment-status scheduled">Programado</span></td>
                 <td class="amount">US$ 1,239.80</td>
               </tr>
               <tr>
+                <td>OP-2026-0021</td>
                 <td>BR-150817626</td>
-                <td>Eleanor Brooks</td>
                 <td>16 sep 2026</td>
                 <td><span class="payment-status scheduled">Programado</span></td>
                 <td class="amount">US$ 11,892.10</td>
               </tr>
               <tr>
+                <td>OP-2026-0022</td>
                 <td>BR-150812497</td>
-                <td>Erik Müller</td>
                 <td>30 sep 2026</td>
                 <td><span class="payment-status scheduled">Programado</span></td>
                 <td class="amount">US$ 1,299.80</td>
               </tr>
               <tr>
+                <td>OP-2026-0023</td>
                 <td>BR-150814908</td>
-                <td>Claire Whitmore</td>
                 <td>30 sep 2026</td>
                 <td><span class="payment-status scheduled">Programado</span></td>
                 <td class="amount">US$ 2,489.60</td>
               </tr>
               <tr>
+                <td>OP-2026-0024</td>
                 <td>BR-150816116</td>
-                <td>Wei Chen</td>
                 <td>30 sep 2026</td>
                 <td><span class="payment-status scheduled">Programado</span></td>
                 <td class="amount">US$ 1,119.80</td>
               </tr>
               <tr>
+                <td>OP-2026-0025</td>
                 <td>BR-150819284</td>
-                <td>Min-Ji Park</td>
                 <td>07 oct 2026</td>
                 <td><span class="payment-status scheduled">Programado</span></td>
                 <td class="amount">US$ 1,239.00</td>
               </tr>
               <tr>
+                <td>OP-2026-0026</td>
                 <td>BR-150821606</td>
-                <td>Kenji Watanabe</td>
                 <td>07 oct 2026</td>
                 <td><span class="payment-status scheduled">Programado</span></td>
                 <td class="amount">US$ 3,755.40</td>
               </tr>
               <tr>
+                <td>OP-2026-0027</td>
                 <td>BR-150823377</td>
-                <td>Ethan Moore</td>
                 <td>14 oct 2026</td>
                 <td><span class="payment-status scheduled">Programado</span></td>
                 <td class="amount">US$ 1,679.70</td>
               </tr>
               <tr>
+                <td>OP-2026-0028</td>
                 <td>BR-150825294</td>
-                <td>Lars Holm</td>
                 <td>14 oct 2026</td>
                 <td><span class="payment-status scheduled">Programado</span></td>
                 <td class="amount">US$ 1,189.00</td>
               </tr>
               <tr>
+                <td>OP-2026-0029</td>
                 <td>BR-150827459</td>
-                <td>Yuki Kobayashi</td>
                 <td>21 oct 2026</td>
                 <td><span class="payment-status scheduled">Programado</span></td>
                 <td class="amount">US$ 2,519.60</td>
               </tr>
               <tr>
+                <td>OP-2026-0030</td>
                 <td>BR-150829618</td>
-                <td>Arthur Coleman</td>
                 <td>21 oct 2026</td>
                 <td><span class="payment-status scheduled">Programado</span></td>
                 <td class="amount">US$ 1,251.00</td>
               </tr>
               <tr>
+                <td>OP-2026-0031</td>
                 <td>BR-150804498</td>
-                <td>Michael Harrison</td>
                 <td>21 oct 2026</td>
                 <td><span class="payment-status scheduled">Programado</span></td>
                 <td class="amount">US$ 7,979.20</td>
@@ -1196,8 +1245,8 @@
 
     <section class="page-section" data-section="marketplace">
       <h1 class="page-title">Marketplace</h1>
-      <div class="wide-card success-alert" style="margin-bottom:24px;"><div class="big-icon">🧭</div><div><h2>Reservas disponibles para tomar</h2><p>Seleccione una reserva vigente para revisar los datos completos y agregarla a la sección Reservas.</p></div></div>
-      <div class="market-toolbar"><div class="field">Buscar: Machu Picchu, Valle Sagrado, código BR</div><div class="select-like green-select">Reservas Marketplace (52)⌄</div></div>
+      <div class="wide-card success-alert" style="margin-bottom:24px;"><div class="big-icon icon-only"><span class="ui-icon icon-market"></span></div><div><h2>Reservas disponibles para tomar</h2><p>Seleccione una reserva vigente para revisar los datos completos y agregarla a la sección Reservas.</p></div></div>
+      <div class="market-toolbar"><input class="field filter-input" id="marketSearch" type="text" placeholder="Buscar: Machu Picchu, Valle Sagrado, código BR" /><div class="select-like green-select">Reservas Marketplace (52)⌄</div></div>
       <div id="marketplaceGrid" class="market-grid"></div>
     </section>
     <div class="market-modal" id="marketModal" aria-hidden="true"><div class="market-modal-card"><button class="market-close" id="marketClose" type="button">×</button><div id="marketModalContent"></div></div></div>
@@ -4914,6 +4963,17 @@
 ];
 
     function listItems(items) { return (items || []).map(item => `<li>${item}</li>`).join(""); }
+    function uiIcon(name) {
+      return `<span class="ui-icon icon-${name}" aria-hidden="true"></span>`;
+    }
+
+    function dateInputToTime(value, endOfDay = false) {
+      if (!value) return null;
+      const time = endOfDay ? "T23:59:59" : "T00:00:00";
+      const stamp = new Date(value + time).getTime();
+      return Number.isNaN(stamp) ? null : stamp;
+    }
+
     function parseBookingDate(dateText) {
       const months = {"ene":0,"feb":1,"mar":2,"abr":3,"may":4,"jun":5,"jul":6,"ago":7,"sep":8,"sept":8,"oct":9,"nov":10,"dic":11};
       const match = String(dateText || "").toLowerCase().match(/(\d{1,2})\s+([a-záéíóúñ]+)\s+(\d{4})/i);
@@ -4925,51 +4985,93 @@
     function getAllBookings() { return [...bookings, ...getAcceptedMarketplaceBookings()]; }
 
     function renderBookings() {
-      const list = document.getElementById("bookingsList"); if (!list) return;
+      const list = document.getElementById("bookingsList"); 
+      if (!list) return;
+
       const sortOrder = document.getElementById("bookingSort")?.value || "asc";
-      const visibleBookings = [...getAllBookings()].sort((a,b) => sortOrder === "desc" ? parseBookingDate(b.date)-parseBookingDate(a.date) : parseBookingDate(a.date)-parseBookingDate(b.date));
-      const counter = document.getElementById("bookingCount"); if (counter) counter.textContent = String(visibleBookings.length);
+      const codeTerm = (document.getElementById("bookingCodeFilter")?.value || "").trim().toLowerCase();
+      const travelerTerm = (document.getElementById("bookingTravelerFilter")?.value || "").trim().toLowerCase();
+      const startTime = dateInputToTime(document.getElementById("bookingStartDate")?.value || "");
+      const endTime = dateInputToTime(document.getElementById("bookingEndDate")?.value || "", true);
+
+      const visibleBookings = [...getAllBookings()].filter(booking => {
+          const bookingTime = parseBookingDate(booking.date);
+          return (!codeTerm || String(booking.code || "").toLowerCase().includes(codeTerm))
+            && (!travelerTerm || String(booking.traveler || "").toLowerCase().includes(travelerTerm))
+            && (!startTime || bookingTime >= startTime)
+            && (!endTime || bookingTime <= endTime);
+        })
+        .sort((a,b) => sortOrder === "desc" ? parseBookingDate(b.date)-parseBookingDate(a.date) : parseBookingDate(a.date)-parseBookingDate(b.date));
+
+      const counter = document.getElementById("bookingCount"); 
+      if (counter) counter.textContent = String(visibleBookings.length);
+
+      if (!visibleBookings.length) {
+        list.innerHTML = `<article class="booking-card"><h2>No se encontraron reservas</h2><div class="subtitle">Prueba con otro rango de fechas o borra los filtros.</div></article>`;
+        return;
+      }
+
       list.innerHTML = visibleBookings.map((booking,index) => {
         const expanded = index === 0 ? "show" : "";
         const toggleText = index === 0 ? "Ocultar detalles⌃" : "Mostrar detalles⌄";
         const badgeStyle = booking.statusClass === "ok" ? 'style="background:var(--primary);"' : "";
-        return `
-          <article class="booking-card">
-            <div class="booking-top"><span>🗓️ ${booking.date}</span><span class="badge" ${badgeStyle}>${booking.status}</span></div>
-            <h2>${booking.title}</h2><div class="subtitle">${booking.subtitle}</div>
+        return `<article class="booking-card">
+            <div class="booking-top"><span class="booking-date-label">${uiIcon("calendar")} ${booking.date}</span><span class="badge" ${badgeStyle}>${booking.status}</span></div>
+            <h2>${booking.title}</h2>
+            <div class="subtitle">${booking.subtitle}</div>
             <div class="booking-grid"><div><b>Viajero principal:</b> ${booking.traveler}<br><br>${booking.paxText}</div><div><b>${booking.code}</b><br><br>${booking.sent}</div></div>
             <button class="details-toggle" type="button" data-booking="${index}">${toggleText}</button>
             <div class="booking-details ${expanded}" id="bookingDetails${index}">
               <div class="instant-label">CONFIRMACIÓN INSTANTÁNEA</div>
-              <div class="details-columns"><div>
-                <p class="detail-heading">Números de teléfono de clientes:</p><p class="masked-phone">${booking.phone} <span class="show-link">◉ Show</span></p>
-                <p class="detail-heading">Nombres de los viajeros:</p><ul>${listItems(booking.names)}</ul>
-                <p class="detail-heading">Idioma de la excursión o actividad:</p><ul><li>${booking.language}</li></ul>
-                <p class="detail-heading">Servicios incluidos:</p><ul>${listItems(booking.services)}</ul>
-                <p class="detail-heading">Datos del viajero:</p><ul><li><b>Número de pasaporte:</b> ${booking.passports}</li><li><b>Nacionalidad del titular del pasaporte:</b> ${booking.nationalities}</li><li><b>Fecha de caducidad del pasaporte:</b> ${booking.expiry}</li><li><b>Fechas de nacimiento:</b> ${booking.births}</li></ul>
-              </div><div>
-                <p><b>Punto de recogida:</b> ${booking.pickup}</p><p><b>Origen de las reservas:</b> ${booking.origin}</p><p><b>Código del producto:</b> ${booking.productCode}</p><p><b>Número de confirmación del proveedor:</b> ${booking.supplierConfirmation}</p><p><b>Autorizada por la API:</b> ${booking.api}</p><p><b>Solicitud de cancelación:</b> ${booking.cancellation}</p><p><b>Importe que recibirá:</b> ${booking.amount}</p>
-                <div class="booking-links"><a href="#">Contactar con el servicio de atención al cliente</a><a href="#">Historial de reservas</a></div>
-              </div></div>
-            </div><div class="booking-actions"><a href="#">${booking.action}</a></div>
+              <div class="details-columns">
+                <div><p class="detail-heading">Números de teléfono de clientes:</p><p class="masked-phone">${booking.phone} <span class="show-link">◉ Show</span></p><p class="detail-heading">Nombres de los viajeros:</p><ul>${listItems(booking.names)}</ul><p class="detail-heading">Idioma de la excursión o actividad:</p><ul><li>${booking.language}</li></ul><p class="detail-heading">Servicios incluidos:</p><ul>${listItems(booking.services)}</ul><p class="detail-heading">Datos del viajero:</p><ul><li><b>Número de pasaporte:</b> ${booking.passports}</li><li><b>Nacionalidad del titular del pasaporte:</b> ${booking.nationalities}</li><li><b>Fecha de caducidad del pasaporte:</b> ${booking.expiry}</li><li><b>Fechas de nacimiento:</b> ${booking.births}</li></ul></div>
+                <div><p><b>Punto de recogida:</b> ${booking.pickup}</p><p><b>Origen de las reservas:</b> ${booking.origin}</p><p><b>Código del producto:</b> ${booking.productCode}</p><p><b>Número de confirmación del proveedor:</b> ${booking.supplierConfirmation}</p><p><b>Autorizada por la API:</b> ${booking.api}</p><p><b>Solicitud de cancelación:</b> ${booking.cancellation}</p><p><b>Importe que recibirá:</b> ${booking.amount}</p><div class="booking-links"><a href="#">Contactar con el servicio de atención al cliente</a><a href="#">Historial de reservas</a></div></div>
+              </div>
+            </div>
+            <div class="booking-actions"><a href="#">${booking.action}</a></div>
           </article>`;
       }).join("") + `<div class="pagination-row"><div class="page-indicator"><span>‹</span><span class="current-page">1</span><span>›</span></div><div class="per-page"><span>Results per page:</span><span class="per-page-box">10⌄</span></div></div>`;
-      document.querySelectorAll(".details-toggle").forEach(button => button.addEventListener("click", () => { const index = button.dataset.booking; const details = document.getElementById(`bookingDetails${index}`); const isOpen = details.classList.toggle("show"); button.textContent = isOpen ? "Ocultar detalles⌃" : "Mostrar detalles⌄"; }));
+
+      document.querySelectorAll(".details-toggle").forEach(button => button.addEventListener("click", () => {
+        const index = button.dataset.booking; const details = document.getElementById(`bookingDetails${index}`); const isOpen = details.classList.toggle("show"); button.textContent = isOpen ? "Ocultar detalles⌃" : "Mostrar detalles⌄";
+      }));
     }
 
     function renderMarketplace() {
-      const grid = document.getElementById("marketplaceGrid"); if (!grid) return;
+      const grid = document.getElementById("marketplaceGrid"); 
+      if (!grid) return;
       const acceptedCodes = new Set(getAcceptedMarketplaceBookings().map(b => b.code));
-      grid.innerHTML = marketplaceBookings.map((item,index) => {
-        const alreadyAccepted = acceptedCodes.has(item.code); const unavailable = !item.available || alreadyAccepted; const badgeText = alreadyAccepted ? "Tomada" : item.marketStatus;
-        return `<article class="market-card ${unavailable ? "unavailable" : ""}" data-market="${index}"><div class="market-card-top"><span class="market-code">${item.code}</span><span class="market-badge ${unavailable ? "off" : ""}">${unavailable ? badgeText : "Vigente"}</span></div><h3>${item.title}</h3><div class="market-meta">📅 ${item.date}<br>👥 ${item.paxText}<br>🧳 Lead traveler: ${item.traveler}</div><div class="market-amount">${item.amount}</div></article>`;
+      const searchTerm = (document.getElementById("marketSearch")?.value || "").trim().toLowerCase();
+
+      const items = marketplaceBookings.filter(item => {
+        if (!searchTerm) return true;
+        return [item.code, item.title, item.traveler, item.date, item.amount].join(" ").toLowerCase().includes(searchTerm);
+      });
+
+      grid.innerHTML = items.map((item) => {
+        const originalIndex = marketplaceBookings.findIndex(m => m.code === item.code);
+        const alreadyAccepted = acceptedCodes.has(item.code); 
+        const unavailable = !item.available || alreadyAccepted; 
+        const badgeText = alreadyAccepted ? "Tomada" : item.marketStatus;
+        return `<article class="market-card ${unavailable ? "unavailable" : ""}" data-market="${originalIndex}">
+          <div class="market-card-top"><span class="market-code">${item.code}</span><span class="market-badge ${unavailable ? "off" : ""}">${unavailable ? badgeText : "Vigente"}</span></div>
+          <h3>${item.title}</h3>
+          <div class="market-meta">
+            <span class="market-line">${uiIcon("calendar")} ${item.date}</span>
+            <span class="market-line">${uiIcon("users")} ${item.paxText}</span>
+            <span class="market-line">${uiIcon("person")} Titular: ${item.traveler}</span>
+          </div>
+          <div class="market-amount">${item.amount}</div>
+        </article>`;
       }).join("");
+
       document.querySelectorAll(".market-card").forEach(card => card.addEventListener("click", () => openMarketModal(Number(card.dataset.market))));
     }
+
     function openMarketModal(index) {
       const item = marketplaceBookings[index]; const modal = document.getElementById("marketModal"); const content = document.getElementById("marketModalContent"); if (!item || !modal || !content) return;
       const acceptedCodes = new Set(getAcceptedMarketplaceBookings().map(b => b.code)); const unavailable = !item.available || acceptedCodes.has(item.code);
-      content.innerHTML = `<div class="booking-top"><span>🗓️ ${item.date}</span><span class="market-badge ${unavailable ? "off" : ""}">${unavailable ? (acceptedCodes.has(item.code) ? "Tomada" : "No disponible") : "Vigente"}</span></div><h2 class="market-modal-title">${item.title}</h2><div class="market-modal-sub">${item.subtitle}</div><div class="booking-grid"><div><b>Viajero principal:</b> ${item.traveler}<br><br>${item.paxText}</div><div><b>${item.code}</b><br><br>${item.sent}</div></div><div class="booking-details show" style="border-top:1px solid #e7eaee;margin-top:20px;padding-top:20px;"><div class="instant-label">CONFIRMACIÓN INSTANTÁNEA</div><div class="details-columns"><div><p class="detail-heading">Números de teléfono de clientes:</p><p class="masked-phone">${item.phone} <span class="show-link">◉ Show</span></p><p class="detail-heading">Nombres de los viajeros:</p><ul>${listItems(item.names)}</ul><p class="detail-heading">Idioma de la excursión o actividad:</p><ul><li>${item.language}</li></ul><p class="detail-heading">Servicios incluidos:</p><ul>${listItems(item.services)}</ul><p class="detail-heading">Datos del viajero:</p><ul><li><b>Número de pasaporte:</b> ${item.passports}</li><li><b>Nacionalidad del titular del pasaporte:</b> ${item.nationalities}</li><li><b>Fecha de caducidad del pasaporte:</b> ${item.expiry}</li><li><b>Fechas de nacimiento:</b> ${item.births}</li></ul></div><div><p><b>Punto de recogida:</b> ${item.pickup}</p><p><b>Origen de las reservas:</b> ${item.origin}</p><p><b>Código del producto:</b> ${item.productCode}</p><p><b>Número de confirmación del proveedor:</b> ${item.supplierConfirmation}</p><p><b>Autorizada por la API:</b> ${item.api}</p><p><b>Solicitud de cancelación:</b> ${item.cancellation}</p><p><b>Importe que recibirá:</b> ${item.amount}</p></div></div></div><div class="market-modal-actions"><button class="solid-btn danger-light" id="discardMarket" type="button">Descartar</button><button class="solid-btn" id="takeMarket" type="button" ${unavailable ? "disabled style='opacity:.55;cursor:not-allowed;'" : ""}>Tomar reserva</button></div>`;
+      content.innerHTML = `<div class="booking-top"><span class="booking-date-label">${uiIcon("calendar")} ${item.date}</span><span class="market-badge ${unavailable ? "off" : ""}">${unavailable ? (acceptedCodes.has(item.code) ? "Tomada" : "No disponible") : "Vigente"}</span></div><h2 class="market-modal-title">${item.title}</h2><div class="market-modal-sub">${item.subtitle}</div><div class="booking-grid"><div><b>Viajero principal:</b> ${item.traveler}<br><br>${item.paxText}</div><div><b>${item.code}</b><br><br>${item.sent}</div></div><div class="booking-details show" style="border-top:1px solid #e7eaee;margin-top:20px;padding-top:20px;"><div class="instant-label">CONFIRMACIÓN INSTANTÁNEA</div><div class="details-columns"><div><p class="detail-heading">Números de teléfono de clientes:</p><p class="masked-phone">${item.phone} <span class="show-link">◉ Show</span></p><p class="detail-heading">Nombres de los viajeros:</p><ul>${listItems(item.names)}</ul><p class="detail-heading">Idioma de la excursión o actividad:</p><ul><li>${item.language}</li></ul><p class="detail-heading">Servicios incluidos:</p><ul>${listItems(item.services)}</ul><p class="detail-heading">Datos del viajero:</p><ul><li><b>Número de pasaporte:</b> ${item.passports}</li><li><b>Nacionalidad del titular del pasaporte:</b> ${item.nationalities}</li><li><b>Fecha de caducidad del pasaporte:</b> ${item.expiry}</li><li><b>Fechas de nacimiento:</b> ${item.births}</li></ul></div><div><p><b>Punto de recogida:</b> ${item.pickup}</p><p><b>Origen de las reservas:</b> ${item.origin}</p><p><b>Código del producto:</b> ${item.productCode}</p><p><b>Número de confirmación del proveedor:</b> ${item.supplierConfirmation}</p><p><b>Autorizada por la API:</b> ${item.api}</p><p><b>Solicitud de cancelación:</b> ${item.cancellation}</p><p><b>Importe que recibirá:</b> ${item.amount}</p></div></div></div><div class="market-modal-actions"><button class="solid-btn danger-light" id="discardMarket" type="button">Descartar</button><button class="solid-btn" id="takeMarket" type="button" ${unavailable ? "disabled style='opacity:.55;cursor:not-allowed;'" : ""}>Tomar reserva</button></div>`;
       modal.classList.add("show"); modal.setAttribute("aria-hidden","false"); document.getElementById("discardMarket").onclick = closeMarketModal; document.getElementById("takeMarket").onclick = () => { if (unavailable) return; const accepted = getAcceptedMarketplaceBookings(); accepted.push({...item, origin:"Viator", status:"Confirmada", statusClass:"ok", action:"Cancelar reserva"}); saveAcceptedMarketplaceBookings(accepted); closeMarketModal(); renderMarketplace(); renderBookings(); setActivePage("reservas"); };
     }
     function closeMarketModal() { const modal = document.getElementById("marketModal"); if (!modal) return; modal.classList.remove("show"); modal.setAttribute("aria-hidden","true"); }
@@ -4997,6 +5099,28 @@
     document.getElementById("logoutBtn")?.addEventListener("click", () => { sessionStorage.removeItem("viatorSupplierLoggedIn"); sessionStorage.removeItem("viatorSupplierUser"); window.location.href="index.html"; });
     document.getElementById("closeBokun")?.addEventListener("click", () => document.getElementById("bokunBanner")?.classList.remove("show"));
     document.getElementById("bookingSort")?.addEventListener("change", renderBookings);
+    document.getElementById("bookingSearchBtn")?.addEventListener("click", renderBookings);
+    document.getElementById("bookingCodeFilter")?.addEventListener("keydown", (e) => { if (e.key === "Enter") renderBookings(); });
+    document.getElementById("bookingTravelerFilter")?.addEventListener("keydown", (e) => { if (e.key === "Enter") renderBookings(); });
+    document.querySelectorAll(".quick-filter").forEach(btn => btn.addEventListener("click", () => {
+      const today = new Date(2026, 7, 9);
+      const start = new Date(today);
+      const end = new Date(today);
+      if (btn.dataset.range === "tomorrow") { start.setDate(today.getDate() + 1); end.setDate(today.getDate() + 1); }
+      if (btn.dataset.range === "7days") { end.setDate(today.getDate() + 7); }
+      const fmt = (d) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+      document.getElementById("bookingStartDate").value = fmt(start);
+      document.getElementById("bookingEndDate").value = fmt(end);
+      renderBookings();
+    }));
+    document.getElementById("clearBookingFilters")?.addEventListener("click", () => {
+      document.getElementById("bookingCodeFilter").value = "";
+      document.getElementById("bookingTravelerFilter").value = "";
+      document.getElementById("bookingStartDate").value = "";
+      document.getElementById("bookingEndDate").value = "";
+      renderBookings();
+    });
+    document.getElementById("marketSearch")?.addEventListener("input", renderMarketplace);
     document.getElementById("marketClose")?.addEventListener("click", closeMarketModal);
     document.getElementById("marketModal")?.addEventListener("click", event => { if (event.target.id === "marketModal") closeMarketModal(); });
     renderBookings(); renderMarketplace();
