@@ -686,6 +686,33 @@
       .help-button { right: 14px; bottom: 18px; padding: 12px 18px; font-size: 16px; }
       .bokun-banner { display: none !important; }
     }
+
+    .booking-sort { border: 1px solid #e1e1e2; appearance: none; cursor: pointer; font-family: inherit; }
+    .payment-status.paid { background: #e7f4ec; color: #0b6b42; }
+    .payment-status.scheduled { background: #eef3ff; color: #2457a6; }
+    .payment-status.process { background: #fff1d6; color: #9a5b00; }
+    .market-toolbar { display:grid; grid-template-columns:1fr 280px; gap:14px; margin-bottom:22px; }
+    .market-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; }
+    .market-card { background:#fff; border:1px solid #e4e8eb; box-shadow:var(--shadow); border-radius:4px; padding:22px; cursor:pointer; transition:transform .15s ease, box-shadow .15s ease; min-height:254px; }
+    .market-card:hover { transform:translateY(-2px); box-shadow:0 6px 18px rgba(17,24,39,.14); }
+    .market-card.unavailable { opacity:.74; cursor:not-allowed; }
+    .market-card-top { display:flex; justify-content:space-between; gap:10px; align-items:center; margin-bottom:14px; }
+    .market-badge { display:inline-flex; align-items:center; padding:4px 10px; border-radius:4px; background:var(--primary); color:#fff; font-size:12px; font-weight:900; text-transform:uppercase; }
+    .market-badge.off { background:var(--danger); }
+    .market-card h3 { margin:0 0 10px; font-size:20px; line-height:1.18; }
+    .market-meta { color:#555a62; font-size:15px; font-weight:700; line-height:1.65; }
+    .market-amount { margin-top:14px; font-size:24px; font-weight:900; color:var(--primary-dark); }
+    .market-code { font-weight:900; color:#151a22; }
+    .market-modal { position:fixed; inset:0; background:rgba(5,12,20,.58); display:none; align-items:center; justify-content:center; z-index:200; padding:28px; }
+    .market-modal.show { display:flex; }
+    .market-modal-card { background:#fff; width:min(1080px,96vw); max-height:90vh; overflow-y:auto; border-radius:5px; box-shadow:0 18px 60px rgba(0,0,0,.35); padding:32px; position:relative; }
+    .market-close { position:absolute; right:16px; top:12px; border:0; background:transparent; font-size:34px; line-height:1; cursor:pointer; color:#4c525a; }
+    .market-modal-title { margin:0 0 10px; font-size:28px; line-height:1.15; }
+    .market-modal-sub { color:#7b8088; font-size:18px; font-weight:700; margin-bottom:20px; }
+    .market-modal-actions { display:flex; justify-content:flex-end; gap:14px; border-top:1px solid #e7eaee; padding-top:20px; margin-top:22px; }
+    .solid-btn.danger-light { background:#fff; color:var(--primary); border:1px solid var(--primary); }
+    @media (max-width:980px) { .market-grid { grid-template-columns:1fr; } .market-toolbar { grid-template-columns:1fr; } }
+
   </style>
 </head>
 <body>
@@ -700,6 +727,7 @@
       <button data-page="rendimiento">Rendimiento</button>
       <button data-page="opiniones">Opiniones</button>
       <button data-page="finanzas">Finanzas</button>
+      <button data-page="marketplace">Marketplace</button>
     </nav>
 
     <div class="right-tools">
@@ -764,10 +792,13 @@
           <div class="filters">
             <div class="field">BR-por ejemplo: 91</div>
             <div class="field">📅 &nbsp; 22 jun 2026 &nbsp;&nbsp;&nbsp; | &nbsp; 📅 &nbsp; A</div>
-            <div class="select-like green-select">Estado de la reserva (Todos) (35)⌄</div>
+            <div class="select-like green-select">Estado de la reserva (Todos) (<span id="bookingCount">35</span>)⌄</div>
             <div class="field">Lead traveler</div>
             <div class="select-like" style="grid-column: span 2;">Todos los productos (30)<span>⌄</span></div>
-            <div class="select-like">Reservas nuevas al principio<span>⌄</span></div>
+            <select class="select-like booking-sort" id="bookingSort" aria-label="Ordenar reservas">
+              <option value="asc">Más antiguas primero</option>
+              <option value="desc">Más recientes primero</option>
+            </select>
           </div>
 
           <div class="quick">⚱️ Filtros rápidos: <a href="#">Hoy</a> | <a href="#">Mañana</a> | <a href="#">Próximos 7 días</a><span class="clear-filters">✕ Borrar todos los filtros</span></div>
@@ -913,31 +944,33 @@
       </div>
     </section>
 
+
     <section class="page-section" data-section="finanzas">
       <h1 class="page-title">Finanzas</h1>
       <div class="wide-card success-alert" style="margin-bottom:26px;">
         <div class="big-icon">✓</div>
-        <div><h2>Pagos y reportes listos</h2><p>Consulte sus balances, próximas liquidaciones y reportes de reservas.</p></div>
+        <div><h2>Pagos y reportes listos</h2><p>Historial de pagos actualizado con montos reales de las reservas cargadas en el panel.</p></div>
       </div>
       <div class="finance-grid">
-        <div class="finance-card"><h3>Balance en proceso</h3><div class="money">US$ 5,039.10</div><p>Última liquidación pendiente de liberación.</p></div>
-        <div class="finance-card"><h3>Pagos procesados</h3><div class="money">US$ 7,141.00</div><p>Total acumulado de pagos ya programados.</p></div>
-        <div class="finance-card"><h3>Cancelaciones últimos 90 días</h3><div class="money">0</div><p>Buen estado de rendimiento financiero.</p></div>
+        <div class="finance-card"><h3>Pagos recibidos</h3><div class="money">US$ 12,009.40</div><p>Fechas ya vencidas al 08 de agosto de 2026.</p></div>
+        <div class="finance-card"><h3>En proceso</h3><div class="money">US$ 6,519.00</div><p>Incluye liquidaciones pendientes o retenidas para retiro.</p></div>
+        <div class="finance-card"><h3>Pagos programados</h3><div class="money">US$ 56,849.92</div><p>Fechas futuras según cronograma de cobros.</p></div>
       </div>
 
       <div class="payments-panel">
         <div class="payments-head">
           <div>
             <h2>Historial de pagos</h2>
-            <p>Liquidaciones programadas para My Cusco Trip.</p>
+            <p>Reservas confirmadas ordenadas por fecha de pago. La Reserva 11 figura en proceso.</p>
           </div>
-          <div class="payments-summary">Total listado: US$ 12,180.10</div>
+          <div class="payments-summary">Total listado: US$ 75,378.32</div>
         </div>
         <div class="payments-table-wrap">
           <table class="payments-table" aria-label="Historial de pagos">
             <thead>
               <tr>
                 <th>Reserva</th>
+                <th>Viajero principal</th>
                 <th>Fecha de pago</th>
                 <th>Estado</th>
                 <th style="text-align:right;">Importe</th>
@@ -945,52 +978,229 @@
             </thead>
             <tbody>
               <tr>
-                <td>CUZ-21422311</td>
-                <td>5/5/2026</td>
-                <td><span class="payment-status">Programado</span></td>
+                <td>BR-150422311</td>
+                <td>Jennifer Salgado</td>
+                <td>05 may 2026</td>
+                <td><span class="payment-status paid">Pagado</span></td>
                 <td class="amount">US$ 939.80</td>
               </tr>
               <tr>
-                <td>CUZ-21413314</td>
-                <td>12/5/2026</td>
-                <td><span class="payment-status">Programado</span></td>
+                <td>BR-150424314</td>
+                <td>Jianhua Wang</td>
+                <td>12 may 2026</td>
+                <td><span class="payment-status paid">Pagado</span></td>
                 <td class="amount">US$ 1,191.60</td>
               </tr>
               <tr>
                 <td>BR-847877112</td>
-                <td>19/5/2026</td>
-                <td><span class="payment-status">Programado</span></td>
+                <td>Sylvain Le Berre</td>
+                <td>19 may 2026</td>
+                <td><span class="payment-status paid">Pagado</span></td>
                 <td class="amount">US$ 1,139.00</td>
               </tr>
               <tr>
                 <td>BR-931883800</td>
-                <td>2/6/2026</td>
-                <td><span class="payment-status">Programado</span></td>
+                <td>John Messerschmidt</td>
+                <td>02 jun 2026</td>
+                <td><span class="payment-status paid">Pagado</span></td>
                 <td class="amount">US$ 1,251.00</td>
               </tr>
               <tr>
                 <td>BR-842618094</td>
-                <td>9/6/2026</td>
-                <td><span class="payment-status">Programado</span></td>
+                <td>Jessyca Lefebvre Hamelin</td>
+                <td>09 jun 2026</td>
+                <td><span class="payment-status paid">Pagado</span></td>
                 <td class="amount">US$ 1,199.80</td>
               </tr>
               <tr>
                 <td>BR-860808170</td>
-                <td>16/6/2026</td>
-                <td><span class="payment-status">Programado</span></td>
+                <td>Nelly Lycurgue</td>
+                <td>16 jun 2026</td>
+                <td><span class="payment-status paid">Pagado</span></td>
                 <td class="amount">US$ 1,419.80</td>
               </tr>
-              <tr class="process-row">
-                <td>CUZ-21422311</td>
+              <tr>
+                <td>BR-150530910</td>
+                <td>Mariana Arango Franco</td>
                 <td>En proceso</td>
                 <td><span class="payment-status process">En proceso</span></td>
                 <td class="amount">US$ 5,039.10</td>
+              </tr>
+              <tr>
+                <td>BR-150629318</td>
+                <td>Oliver Bennett</td>
+                <td>21 jul 2026</td>
+                <td><span class="payment-status paid">Pagado</span></td>
+                <td class="amount">US$ 2,399.60</td>
+              </tr>
+              <tr>
+                <td>BR-150707519</td>
+                <td>Camille Dubois</td>
+                <td>28 jul 2026</td>
+                <td><span class="payment-status paid">Pagado / PayPal</span></td>
+                <td class="amount">US$ 1,189.00</td>
+              </tr>
+              <tr>
+                <td>BR-150714775</td>
+                <td>Johannes Schneider</td>
+                <td>05 ago 2026</td>
+                <td><span class="payment-status paid">Pagado</span></td>
+                <td class="amount">US$ 1,279.80</td>
+              </tr>
+              <tr>
+                <td>BR-150703442</td>
+                <td>Renata Oliveira</td>
+                <td>12 ago 2026</td>
+                <td><span class="payment-status process">En proceso</span></td>
+                <td class="amount">US$ 1,479.90</td>
+              </tr>
+              <tr>
+                <td>BR-150722116</td>
+                <td>Francisca Rojas</td>
+                <td>12 ago 2026</td>
+                <td><span class="payment-status scheduled">Programado</span></td>
+                <td class="amount">US$ 1,089.80</td>
+              </tr>
+              <tr>
+                <td>BR-150718902</td>
+                <td>Madison Thompson</td>
+                <td>19 ago 2026</td>
+                <td><span class="payment-status scheduled">Programado</span></td>
+                <td class="amount">US$ 2,459.60</td>
+              </tr>
+              <tr>
+                <td>BR-150710682</td>
+                <td>Melissa Hughes</td>
+                <td>19 ago 2026</td>
+                <td><span class="payment-status scheduled">Programado</span></td>
+                <td class="amount">US$ 1,922.70</td>
+              </tr>
+              <tr>
+                <td>BR-150727625</td>
+                <td>Rebecca Anderson</td>
+                <td>25 ago 2026</td>
+                <td><span class="payment-status scheduled">Programado</span></td>
+                <td class="amount">US$ 7,832.82</td>
+              </tr>
+              <tr>
+                <td>BR-150805731</td>
+                <td>Hiroshi Tanaka</td>
+                <td>02 sep 2026</td>
+                <td><span class="payment-status scheduled">Programado</span></td>
+                <td class="amount">US$ 1,506.70</td>
+              </tr>
+              <tr>
+                <td>BR-150807642</td>
+                <td>Charlotte Evans</td>
+                <td>09 sep 2026</td>
+                <td><span class="payment-status scheduled">Programado</span></td>
+                <td class="amount">US$ 1,209.80</td>
+              </tr>
+              <tr>
+                <td>BR-150809853</td>
+                <td>Satoshi Nakamura</td>
+                <td>09 sep 2026</td>
+                <td><span class="payment-status scheduled">Programado</span></td>
+                <td class="amount">US$ 3,174.50</td>
+              </tr>
+              <tr>
+                <td>BR-150810734</td>
+                <td>Olivia Anderson</td>
+                <td>09 sep 2026</td>
+                <td><span class="payment-status scheduled">Programado</span></td>
+                <td class="amount">US$ 1,239.80</td>
+              </tr>
+              <tr>
+                <td>BR-150817626</td>
+                <td>Eleanor Brooks</td>
+                <td>16 sep 2026</td>
+                <td><span class="payment-status scheduled">Programado</span></td>
+                <td class="amount">US$ 11,892.10</td>
+              </tr>
+              <tr>
+                <td>BR-150812497</td>
+                <td>Erik Müller</td>
+                <td>30 sep 2026</td>
+                <td><span class="payment-status scheduled">Programado</span></td>
+                <td class="amount">US$ 1,299.80</td>
+              </tr>
+              <tr>
+                <td>BR-150814908</td>
+                <td>Claire Whitmore</td>
+                <td>30 sep 2026</td>
+                <td><span class="payment-status scheduled">Programado</span></td>
+                <td class="amount">US$ 2,489.60</td>
+              </tr>
+              <tr>
+                <td>BR-150816116</td>
+                <td>Wei Chen</td>
+                <td>30 sep 2026</td>
+                <td><span class="payment-status scheduled">Programado</span></td>
+                <td class="amount">US$ 1,119.80</td>
+              </tr>
+              <tr>
+                <td>BR-150819284</td>
+                <td>Min-Ji Park</td>
+                <td>07 oct 2026</td>
+                <td><span class="payment-status scheduled">Programado</span></td>
+                <td class="amount">US$ 1,239.00</td>
+              </tr>
+              <tr>
+                <td>BR-150821606</td>
+                <td>Kenji Watanabe</td>
+                <td>07 oct 2026</td>
+                <td><span class="payment-status scheduled">Programado</span></td>
+                <td class="amount">US$ 3,755.40</td>
+              </tr>
+              <tr>
+                <td>BR-150823377</td>
+                <td>Ethan Moore</td>
+                <td>14 oct 2026</td>
+                <td><span class="payment-status scheduled">Programado</span></td>
+                <td class="amount">US$ 1,679.70</td>
+              </tr>
+              <tr>
+                <td>BR-150825294</td>
+                <td>Lars Holm</td>
+                <td>14 oct 2026</td>
+                <td><span class="payment-status scheduled">Programado</span></td>
+                <td class="amount">US$ 1,189.00</td>
+              </tr>
+              <tr>
+                <td>BR-150827459</td>
+                <td>Yuki Kobayashi</td>
+                <td>21 oct 2026</td>
+                <td><span class="payment-status scheduled">Programado</span></td>
+                <td class="amount">US$ 2,519.60</td>
+              </tr>
+              <tr>
+                <td>BR-150829618</td>
+                <td>Arthur Coleman</td>
+                <td>21 oct 2026</td>
+                <td><span class="payment-status scheduled">Programado</span></td>
+                <td class="amount">US$ 1,251.00</td>
+              </tr>
+              <tr>
+                <td>BR-150804498</td>
+                <td>Michael Harrison</td>
+                <td>21 oct 2026</td>
+                <td><span class="payment-status scheduled">Programado</span></td>
+                <td class="amount">US$ 7,979.20</td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
     </section>
+
+
+    <section class="page-section" data-section="marketplace">
+      <h1 class="page-title">Marketplace</h1>
+      <div class="wide-card success-alert" style="margin-bottom:24px;"><div class="big-icon">🧭</div><div><h2>Reservas disponibles para tomar</h2><p>Seleccione una reserva vigente para revisar los datos completos y agregarla a la sección Reservas.</p></div></div>
+      <div class="market-toolbar"><div class="field">Buscar: Machu Picchu, Valle Sagrado, código BR</div><div class="select-like green-select">Reservas Marketplace (52)⌄</div></div>
+      <div id="marketplaceGrid" class="market-grid"></div>
+    </section>
+    <div class="market-modal" id="marketModal" aria-hidden="true"><div class="market-modal-card"><button class="market-close" id="marketClose" type="button">×</button><div id="marketModalContent"></div></div></div>
 
     <section class="page-section" data-section="cuenta">
       <div class="content-card" style="max-width:880px;margin:0 auto;">
@@ -1016,8 +1226,9 @@
   <button class="help-button"><span>?</span><span>Ayuda</span></button>
   <div class="bokun-banner show" id="bokunBanner"><div class="bokun-logo">Bókun</div><p>¿No tiene un sitio web para hacer reservas? Cree uno con Bókun.</p><button class="lime-btn">Más información</button><button class="close-bokun" id="closeBokun">×</button></div>
 
-  <script>
+  
 
+  <script>
     const bookings = [
       {
             "date": "jue, 10 sept 2026",
@@ -1208,7 +1419,7 @@
             "supplierConfirmation": "VIA-150703442",
             "api": "Sí",
             "cancellation": "No aplica",
-            "amount": "1.479,70 USD",
+            "amount": "1.479,90 USD",
             "passports": "FIC-RO713791, FIC-MO717582, FIC-BO721373",
             "nationalities": "Brazil, Brazil, Brazil",
             "expiry": "MARCH 8 2030, JUNE 11 2031, SEPTEMBER 14 2032",
@@ -1590,7 +1801,7 @@
             "action": "Cancelar reserva"
       },
       {
-            "date": "mié, 12 ago 2026",
+            "date": "sáb, 8 ago 2026",
             "status": "Confirmada",
             "statusClass": "ok",
             "title": "Machu Picchu Full Day – Tren Voyager",
@@ -1598,7 +1809,7 @@
             "traveler": "Hiroshi Tanaka",
             "paxText": "3 adultos",
             "code": "BR-150805731",
-            "sent": "Enviada 21 jul 2026, 09:12 GMT−5",
+            "sent": "Enviada 29 jul 2026, 09:18 GMT−5",
             "phone": "+81 ***-***-4826",
             "names": [
                   "Hiroshi Tanaka (Adulto)",
@@ -2191,7 +2402,7 @@
             "subtitle": "Machu Picchu Full Day – Vistadome Observatory ida / Expedition retorno 04:00",
             "traveler": "Jennifer Salgado",
             "paxText": "2 adultos",
-            "code": "CUZ-21422311",
+            "code": "BR-150422311",
             "sent": "Enviada 8 abr 2026, 09:18 GMT−5",
             "phone": "+1 ***-***-2740",
             "names": [
@@ -2229,7 +2440,7 @@
             "subtitle": "Paquete privado con hoteles, Valle Sagrado y Machu Picchu 09:00",
             "traveler": "Mariana Arango Franco",
             "paxText": "9 adultos",
-            "code": "CUZ-21422311-9",
+            "code": "BR-150530910",
             "sent": "Enviada 14 may 2026, 12:08 GMT−5",
             "phone": "+57 ***-***-9136",
             "names": [
@@ -2278,7 +2489,7 @@
             "subtitle": "Valle Sagrado privado + Machu Picchu con tren Vistadome 08:30",
             "traveler": "Carlos Villegas Valencia",
             "paxText": "2 adultos",
-            "code": "CUZ-21414877",
+            "code": "BR-021414877",
             "sent": "Enviada 14 may 2026, 08:42 GMT−5",
             "phone": "+57 ***-***-4819",
             "names": [
@@ -2496,7 +2707,7 @@
             "subtitle": "Paquete privado con hotel en Cusco y Aguas Calientes 08:30",
             "traveler": "Jianhua Wang",
             "paxText": "2 adultos",
-            "code": "CUZ-21413314",
+            "code": "BR-150424314",
             "sent": "Enviada 15 abr 2026, 15:02 GMT−5",
             "phone": "+86 ***-***-4288",
             "names": [
@@ -2531,155 +2742,2265 @@
             "action": "Cancelar reserva"
       }
 ];
+    const marketplaceBookings = [
+      {
+            "date": "mar, 18 ago 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Bienvenida Ancestral – Cusco",
+            "subtitle": "Bienvenida Ancestral – Cusco 04:00",
+            "traveler": "Sophia Kim",
+            "paxText": "3 adultos",
+            "code": "BR-260818100",
+            "sent": "Enviada 10 ago 2026, 08:38 GMT−5",
+            "phone": "+1 ***-***-2310",
+            "names": [
+                  "Sophia Kim (Adulto)",
+                  "Yuna Kim (Adulto)",
+                  "Amelia Kim (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Private pick up and drop off from the hotel in Cusco.",
+                  "Ancestral welcome ceremony with Andean host.",
+                  "Pachamama offering materials included.",
+                  "Bilingual assistance before and during the activity."
+            ],
+            "pickup": "Sonesta Hotel Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P20",
+            "supplierConfirmation": "VIA-MKT-820211",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "255,00 USD",
+            "passports": "FIC-X5256539, FIC-A2659076, FIC-X8624092",
+            "nationalities": "United Kingdom, France, South Korea",
+            "expiry": "FEBRUARY 16 2032, JULY 10 2028, DECEMBER 10 2036",
+            "births": "MARCH 8 1986, MARCH 25 1972, NOVEMBER 6 1998",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "sáb, 22 ago 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "No disponible",
+            "available": false,
+            "title": "Valle Sagrado de los Incas",
+            "subtitle": "Valle Sagrado de los Incas 11:00",
+            "traveler": "Daichi Bennett",
+            "paxText": "3 adultos",
+            "code": "BR-260822101",
+            "sent": "Enviada 12 ago 2026, 10:24 GMT−5",
+            "phone": "+1 ***-***-6862",
+            "names": [
+                  "Daichi Bennett (Adulto)",
+                  "Lucas Bennett (Adulto)",
+                  "Leo Bennett (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Hotel pick up in Cusco.",
+                  "Guided tour through the Sacred Valley.",
+                  "Transport in tourist vehicle.",
+                  "Local guide and permanent assistance.",
+                  "Drop off in Cusco or Ollantaytambo."
+            ],
+            "pickup": "Novotel Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P6",
+            "supplierConfirmation": "VIA-MKT-216230",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "359,70 USD",
+            "passports": "FIC-P8204006, FIC-A3933571, FIC-A3116308",
+            "nationalities": "China, Netherlands, South Korea",
+            "expiry": "SEPTEMBER 3 2028, JULY 8 2035, APRIL 12 2029",
+            "births": "JUNE 22 1983, MAY 18 1992, JANUARY 19 1974",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "lun, 24 ago 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Machu Picchu Full Day con tren Vistadome Observatory",
+            "subtitle": "Machu Picchu Full Day con tren Vistadome Observatory 07:00",
+            "traveler": "Akira Chen",
+            "paxText": "4 adultos",
+            "code": "BR-260824102",
+            "sent": "Enviada 24 ago 2026, 18:38 GMT−5",
+            "phone": "+1 ***-***-1068",
+            "names": [
+                  "Akira Chen (Adulto)",
+                  "Mei Chen (Adulto)",
+                  "Aiko Chen (Adulto)",
+                  "Sophia Chen (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Transfer and pick up at Ollantaytambo train station.",
+                  "Train ticket to Machu Picchu category Vistadome Observatory or Expedition.",
+                  "Bus up and down to Machu Picchu.",
+                  "Entrance ticket to the citadel of Machu Picchu.",
+                  "Guided tour in the citadel of Machu Picchu by a certified guide.",
+                  "Permanent assistance and guidance 24/7 by an assigned travel agent."
+            ],
+            "pickup": "Tierra Viva Cusco Centro",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P15",
+            "supplierConfirmation": "VIA-MKT-127852",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "2.399,60 USD",
+            "passports": "FIC-X6959598, FIC-A1517465, FIC-A9673551, FIC-P2199971",
+            "nationalities": "Canada, Canada, South Korea, China",
+            "expiry": "FEBRUARY 17 2034, FEBRUARY 14 2034, DECEMBER 21 2030, SEPTEMBER 4 2035",
+            "births": "OCTOBER 21 1973, OCTOBER 23 1971, JUNE 4 1995, AUGUST 17 1965",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "mié, 26 ago 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Machu Picchu Full Day con tren Voyager",
+            "subtitle": "Machu Picchu Full Day con tren Voyager 11:00",
+            "traveler": "Haruto Tanaka",
+            "paxText": "5 adultos",
+            "code": "BR-260826103",
+            "sent": "Enviada 14 ago 2026, 10:38 GMT−5",
+            "phone": "+1 ***-***-2403",
+            "names": [
+                  "Haruto Tanaka (Adulto)",
+                  "Mia Tanaka (Adulto)",
+                  "Claire Tanaka (Adulto)",
+                  "Mei Tanaka (Adulto)",
+                  "Akira Tanaka (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Transfer and pick up at Ollantaytambo train station.",
+                  "Train ticket to Machu Picchu category Voyager or Expedition.",
+                  "Bus up and down to Machu Picchu.",
+                  "Entrance ticket to the citadel of Machu Picchu.",
+                  "Guided tour in the citadel of Machu Picchu by a certified guide."
+            ],
+            "pickup": "Wyndham Costa del Sol Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P18",
+            "supplierConfirmation": "VIA-MKT-686610",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "2.449,50 USD",
+            "passports": "FIC-P1226566, FIC-P3920077, FIC-X1072987, FIC-X6313627, FIC-P3250739",
+            "nationalities": "Australia, USA, Netherlands, Japan, USA",
+            "expiry": "APRIL 1 2031, APRIL 24 2033, JULY 28 2033, SEPTEMBER 9 2036, FEBRUARY 10 2034",
+            "births": "NOVEMBER 24 1996, OCTOBER 23 1976, JANUARY 25 1995, NOVEMBER 3 1988, MARCH 3 1983",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "dom, 30 ago 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Bienvenida Ancestral – Cusco",
+            "subtitle": "Bienvenida Ancestral – Cusco 04:00",
+            "traveler": "Logan Morgan",
+            "paxText": "4 adultos",
+            "code": "BR-260830104",
+            "sent": "Enviada 12 ago 2026, 18:05 GMT−5",
+            "phone": "+1 ***-***-2181",
+            "names": [
+                  "Logan Morgan (Adulto)",
+                  "Claire Morgan (Adulto)",
+                  "Johannes Morgan (Adulto)",
+                  "Sophie Morgan (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Private pick up and drop off from the hotel in Cusco.",
+                  "Ancestral welcome ceremony with Andean host.",
+                  "Pachamama offering materials included.",
+                  "Bilingual assistance before and during the activity."
+            ],
+            "pickup": "Antigua Casona San Blas, Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P20",
+            "supplierConfirmation": "VIA-MKT-309543",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "340,00 USD",
+            "passports": "FIC-X6690605, FIC-X3445280, FIC-X2052511, FIC-A9939973",
+            "nationalities": "Netherlands, China, China, Japan",
+            "expiry": "APRIL 28 2034, JULY 18 2029, SEPTEMBER 9 2032, DECEMBER 22 2033",
+            "births": "AUGUST 19 1977, JUNE 21 1985, NOVEMBER 13 1970, OCTOBER 13 1985",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "mar, 1 sept 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Valle Sagrado de los Incas",
+            "subtitle": "Valle Sagrado de los Incas 04:00",
+            "traveler": "Satoshi Wilson",
+            "paxText": "5 adultos",
+            "code": "BR-260901105",
+            "sent": "Enviada 27 sept 2026, 14:38 GMT−5",
+            "phone": "+1 ***-***-5181",
+            "names": [
+                  "Satoshi Wilson (Adulto)",
+                  "Freya Wilson (Adulto)",
+                  "Emma Wilson (Adulto)",
+                  "Satoshi Wilson (Adulto)",
+                  "Yuki Wilson (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Hotel pick up in Cusco.",
+                  "Guided tour through the Sacred Valley.",
+                  "Transport in tourist vehicle.",
+                  "Local guide and permanent assistance.",
+                  "Drop off in Cusco or Ollantaytambo."
+            ],
+            "pickup": "Tierra Viva Cusco Centro",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P6",
+            "supplierConfirmation": "VIA-MKT-612150",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "749,50 USD",
+            "passports": "FIC-X4697054, FIC-A8401090, FIC-X1864525, FIC-X9361210, FIC-A3755602",
+            "nationalities": "USA, Netherlands, France, Canada, United Kingdom",
+            "expiry": "FEBRUARY 27 2031, FEBRUARY 12 2032, FEBRUARY 26 2031, SEPTEMBER 12 2032, FEBRUARY 3 2032",
+            "births": "JANUARY 14 1979, JUNE 4 1994, OCTOBER 16 1972, OCTOBER 21 1996, AUGUST 20 1982",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "jue, 3 sept 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Machu Picchu Overnight 2D/1N",
+            "subtitle": "Machu Picchu Overnight 2D/1N 08:00",
+            "traveler": "Arthur Moreau",
+            "paxText": "6 adultos",
+            "code": "BR-260903106",
+            "sent": "Enviada 7 sept 2026, 13:05 GMT−5",
+            "phone": "+1 ***-***-3761",
+            "names": [
+                  "Arthur Moreau (Adulto)",
+                  "Amelia Moreau (Adulto)",
+                  "Liam Moreau (Adulto)",
+                  "Ethan Moreau (Adulto)",
+                  "Liang Moreau (Adulto)",
+                  "Chloe Moreau (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Transfer to Ollantaytambo train station.",
+                  "Train tickets round trip.",
+                  "Hotel night in Machu Picchu Pueblo.",
+                  "Entrance ticket to Machu Picchu.",
+                  "Consettur bus tickets.",
+                  "Certified private guide."
+            ],
+            "pickup": "Hotel Rumi Punku, Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P22",
+            "supplierConfirmation": "VIA-MKT-468351",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "3.539,40 USD",
+            "passports": "FIC-P6757032, FIC-P6755269, FIC-P2956297, FIC-P3627198, FIC-A9709492, FIC-A1367398",
+            "nationalities": "Japan, Netherlands, United Kingdom, Australia, Netherlands, Germany",
+            "expiry": "APRIL 22 2028, DECEMBER 24 2029, JULY 25 2035, JULY 27 2032, DECEMBER 16 2033, APRIL 15 2031",
+            "births": "JANUARY 23 1973, MAY 1 1964, JANUARY 18 1990, MARCH 15 1975, MARCH 5 1971, JUNE 16 1965",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "dom, 6 sept 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Valle Sagrado de los Incas",
+            "subtitle": "Valle Sagrado de los Incas 08:00",
+            "traveler": "Noah Coleman",
+            "paxText": "12 adultos",
+            "code": "BR-260906107",
+            "sent": "Enviada 22 sept 2026, 16:45 GMT−5",
+            "phone": "+1 ***-***-4631",
+            "names": [
+                  "Noah Coleman (Adulto)",
+                  "Sophia Coleman (Adulto)",
+                  "Emily Coleman (Adulto)",
+                  "Wei Coleman (Adulto)",
+                  "Yuki Coleman (Adulto)",
+                  "Elena Coleman (Adulto)",
+                  "Satoshi Coleman (Adulto)",
+                  "Sophie Coleman (Adulto)",
+                  "Min-Jae Coleman (Adulto)",
+                  "Isabella Coleman (Adulto)",
+                  "Nils Coleman (Adulto)",
+                  "Satoshi Coleman (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Hotel pick up in Cusco.",
+                  "Guided tour through the Sacred Valley.",
+                  "Transport in tourist vehicle.",
+                  "Local guide and permanent assistance.",
+                  "Drop off in Cusco or Ollantaytambo."
+            ],
+            "pickup": "Antigua Casona San Blas, Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P6",
+            "supplierConfirmation": "VIA-MKT-372794",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "2.278,80 USD",
+            "passports": "FIC-A9806869, FIC-X3679091, FIC-A7859695, FIC-P9691323, FIC-X9118822, FIC-P4389011, FIC-A6816418, FIC-P1787401, FIC-A7468386, FIC-A2688130, FIC-A2817123, FIC-P7279783",
+            "nationalities": "Canada, Australia, Germany, United Kingdom, Germany, United Kingdom, Netherlands, France, Japan, United Kingdom, United Kingdom, South Korea",
+            "expiry": "SEPTEMBER 12 2028, SEPTEMBER 7 2030, SEPTEMBER 26 2035, SEPTEMBER 23 2034, DECEMBER 3 2033, JULY 11 2036, FEBRUARY 7 2031, APRIL 26 2028, SEPTEMBER 13 2034, FEBRUARY 2 2036, SEPTEMBER 24 2031, DECEMBER 5 2032",
+            "births": "MAY 23 1989, NOVEMBER 25 1992, MARCH 3 1992, JANUARY 2 1996, MAY 24 1991, AUGUST 8 1985, AUGUST 10 1978, AUGUST 17 1973, AUGUST 14 1979, OCTOBER 23 1994, AUGUST 28 1992, NOVEMBER 14 1964",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "mié, 9 sept 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Valle Sagrado de los Incas",
+            "subtitle": "Valle Sagrado de los Incas 08:00",
+            "traveler": "Samuel Kim",
+            "paxText": "12 adultos",
+            "code": "BR-260909108",
+            "sent": "Enviada 2 sept 2026, 15:05 GMT−5",
+            "phone": "+1 ***-***-5910",
+            "names": [
+                  "Samuel Kim (Adulto)",
+                  "Claire Kim (Adulto)",
+                  "Liang Kim (Adulto)",
+                  "Grace Kim (Adulto)",
+                  "Henrik Kim (Adulto)",
+                  "William Kim (Adulto)",
+                  "Lucas Kim (Adulto)",
+                  "Hiroshi Kim (Adulto)",
+                  "Oliver Kim (Adulto)",
+                  "Arthur Kim (Adulto)",
+                  "Min-Jae Kim (Adulto)",
+                  "Wei Kim (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Hotel pick up in Cusco.",
+                  "Guided tour through the Sacred Valley.",
+                  "Transport in tourist vehicle.",
+                  "Local guide and permanent assistance.",
+                  "Drop off in Cusco or Ollantaytambo."
+            ],
+            "pickup": "Palacio Manco Capac, Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P6",
+            "supplierConfirmation": "VIA-MKT-580435",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "1.798,80 USD",
+            "passports": "FIC-A1925830, FIC-P2728339, FIC-A3279153, FIC-X5024058, FIC-A7900170, FIC-P1218833, FIC-A4230135, FIC-X3668328, FIC-A2571237, FIC-X7886020, FIC-P4688907, FIC-A6299279",
+            "nationalities": "Australia, France, China, France, United Kingdom, USA, Netherlands, Australia, USA, Japan, South Korea, Germany",
+            "expiry": "SEPTEMBER 12 2029, FEBRUARY 26 2031, FEBRUARY 20 2028, FEBRUARY 26 2030, JULY 24 2036, APRIL 4 2034, DECEMBER 4 2029, JULY 22 2034, SEPTEMBER 18 2031, JULY 23 2036, JULY 17 2031, DECEMBER 6 2030",
+            "births": "OCTOBER 1 1994, MAY 12 1991, OCTOBER 10 1990, AUGUST 21 1967, MARCH 14 1987, NOVEMBER 9 1989, NOVEMBER 14 1977, JUNE 11 1992, NOVEMBER 25 1964, NOVEMBER 9 1979, MAY 4 1966, OCTOBER 13 1981",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "dom, 13 sept 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Bienvenida Ancestral – Cusco",
+            "subtitle": "Bienvenida Ancestral – Cusco 07:00",
+            "traveler": "Johannes Johnson",
+            "paxText": "1 adulto",
+            "code": "BR-260913109",
+            "sent": "Enviada 25 sept 2026, 09:24 GMT−5",
+            "phone": "+1 ***-***-8757",
+            "names": [
+                  "Johannes Johnson (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Private pick up and drop off from the hotel in Cusco.",
+                  "Ancestral welcome ceremony with Andean host.",
+                  "Pachamama offering materials included.",
+                  "Bilingual assistance before and during the activity."
+            ],
+            "pickup": "Novotel Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P20",
+            "supplierConfirmation": "VIA-MKT-920042",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "95,00 USD",
+            "passports": "FIC-X8216691",
+            "nationalities": "Japan",
+            "expiry": "SEPTEMBER 4 2035",
+            "births": "MARCH 3 1976",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "vie, 18 sept 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Machu Picchu Overnight 2D/1N",
+            "subtitle": "Machu Picchu Overnight 2D/1N 08:00",
+            "traveler": "Klaus Schneider",
+            "paxText": "16 adultos",
+            "code": "BR-260918110",
+            "sent": "Enviada 16 sept 2026, 08:38 GMT−5",
+            "phone": "+1 ***-***-8236",
+            "names": [
+                  "Klaus Schneider (Adulto)",
+                  "Emma Schneider (Adulto)",
+                  "Sophia Schneider (Adulto)",
+                  "Joon Schneider (Adulto)",
+                  "Daichi Schneider (Adulto)",
+                  "Daniel Schneider (Adulto)",
+                  "Sophia Schneider (Adulto)",
+                  "Haruto Schneider (Adulto)",
+                  "Lars Schneider (Adulto)",
+                  "Logan Schneider (Adulto)",
+                  "Hiroshi Schneider (Adulto)",
+                  "Arthur Schneider (Adulto)",
+                  "Isabella Schneider (Adulto)",
+                  "Elena Schneider (Adulto)",
+                  "Oliver Schneider (Adulto)",
+                  "Emma Schneider (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Transfer to Ollantaytambo train station.",
+                  "Train tickets round trip.",
+                  "Hotel night in Machu Picchu Pueblo.",
+                  "Entrance ticket to Machu Picchu.",
+                  "Consettur bus tickets.",
+                  "Certified private guide."
+            ],
+            "pickup": "Casa Andina Standard Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P22",
+            "supplierConfirmation": "VIA-MKT-748804",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "10.014,40 USD",
+            "passports": "FIC-A6800028, FIC-X6179631, FIC-X8539896, FIC-X6195858, FIC-A6275046, FIC-A5620906, FIC-P6959779, FIC-A2399045, FIC-X7974507, FIC-X8707666, FIC-P6815941, FIC-A7472552, FIC-P7047823, FIC-A1111981, FIC-P2248608, FIC-P3236798",
+            "nationalities": "Japan, Netherlands, United Kingdom, China, France, United Kingdom, Australia, Germany, Japan, Japan, South Korea, Australia, Netherlands, United Kingdom, USA, USA",
+            "expiry": "SEPTEMBER 7 2034, APRIL 1 2036, SEPTEMBER 3 2034, DECEMBER 12 2029, SEPTEMBER 2 2032, SEPTEMBER 20 2033, JULY 2 2033, JULY 7 2032, DECEMBER 20 2034, FEBRUARY 4 2032, DECEMBER 22 2034, DECEMBER 2 2030, SEPTEMBER 4 2030, APRIL 20 2032, APRIL 13 2035, SEPTEMBER 16 2034",
+            "births": "AUGUST 22 1975, NOVEMBER 18 1969, JUNE 19 1976, MARCH 11 1998, NOVEMBER 20 1968, JUNE 18 1973, MARCH 25 1992, NOVEMBER 15 1994, OCTOBER 16 1976, JUNE 17 1994, OCTOBER 1 1979, MARCH 19 1998, JUNE 3 1985, OCTOBER 26 1993, AUGUST 14 1980, JUNE 1 1981",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "mar, 22 sept 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Machu Picchu Full Day con tren Vistadome Observatory",
+            "subtitle": "Machu Picchu Full Day con tren Vistadome Observatory 07:00",
+            "traveler": "Thomas Chen",
+            "paxText": "12 adultos",
+            "code": "BR-260922111",
+            "sent": "Enviada 9 sept 2026, 14:38 GMT−5",
+            "phone": "+1 ***-***-1292",
+            "names": [
+                  "Thomas Chen (Adulto)",
+                  "Benjamin Chen (Adulto)",
+                  "Daichi Chen (Adulto)",
+                  "Yuna Chen (Adulto)",
+                  "Alice Chen (Adulto)",
+                  "Mia Chen (Adulto)",
+                  "William Chen (Adulto)",
+                  "Ethan Chen (Adulto)",
+                  "Sophia Chen (Adulto)",
+                  "Benjamin Chen (Adulto)",
+                  "Leo Chen (Adulto)",
+                  "Daniel Chen (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Transfer and pick up at Ollantaytambo train station.",
+                  "Train ticket to Machu Picchu category Vistadome Observatory or Expedition.",
+                  "Bus up and down to Machu Picchu.",
+                  "Entrance ticket to the citadel of Machu Picchu.",
+                  "Guided tour in the citadel of Machu Picchu by a certified guide.",
+                  "Permanent assistance and guidance 24/7 by an assigned travel agent."
+            ],
+            "pickup": "Wyndham Costa del Sol Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P15",
+            "supplierConfirmation": "VIA-MKT-768501",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "7.198,80 USD",
+            "passports": "FIC-X5203762, FIC-X3923181, FIC-X6290182, FIC-P3850353, FIC-A8308660, FIC-P6268801, FIC-A4235001, FIC-X4744462, FIC-A1360471, FIC-A7579564, FIC-X6118352, FIC-P6550130",
+            "nationalities": "China, France, Germany, Netherlands, France, USA, France, Australia, Australia, South Korea, Netherlands, Canada",
+            "expiry": "FEBRUARY 6 2033, FEBRUARY 27 2030, SEPTEMBER 21 2036, FEBRUARY 17 2033, JULY 4 2028, FEBRUARY 23 2030, FEBRUARY 13 2029, DECEMBER 3 2035, FEBRUARY 13 2036, APRIL 18 2028, APRIL 24 2036, APRIL 21 2035",
+            "births": "OCTOBER 13 1967, MAY 20 1966, NOVEMBER 18 1988, MARCH 6 1992, OCTOBER 27 1965, NOVEMBER 3 1991, JANUARY 14 1982, MARCH 8 1966, NOVEMBER 11 1972, NOVEMBER 28 1987, AUGUST 13 1981, OCTOBER 5 1994",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "sáb, 26 sept 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Valle Sagrado de los Incas",
+            "subtitle": "Valle Sagrado de los Incas 08:00",
+            "traveler": "Haruto Müller",
+            "paxText": "2 adultos",
+            "code": "BR-260926112",
+            "sent": "Enviada 23 sept 2026, 08:24 GMT−5",
+            "phone": "+1 ***-***-8902",
+            "names": [
+                  "Haruto Müller (Adulto)",
+                  "Alexander Müller (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Hotel pick up in Cusco.",
+                  "Guided tour through the Sacred Valley.",
+                  "Transport in tourist vehicle.",
+                  "Local guide and permanent assistance.",
+                  "Drop off in Cusco or Ollantaytambo."
+            ],
+            "pickup": "Palacio Manco Capac, Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P6",
+            "supplierConfirmation": "VIA-MKT-639677",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "239,80 USD",
+            "passports": "FIC-A1268543, FIC-A6147021",
+            "nationalities": "China, France",
+            "expiry": "JULY 10 2036, APRIL 11 2031",
+            "births": "NOVEMBER 7 1967, AUGUST 20 1981",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "lun, 28 sept 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Machu Picchu Full Day con tren Voyager",
+            "subtitle": "Machu Picchu Full Day con tren Voyager 04:00",
+            "traveler": "Wei Zhang",
+            "paxText": "8 adultos",
+            "code": "BR-260928113",
+            "sent": "Enviada 1 sept 2026, 17:05 GMT−5",
+            "phone": "+1 ***-***-7785",
+            "names": [
+                  "Wei Zhang (Adulto)",
+                  "Alexander Zhang (Adulto)",
+                  "Chloe Zhang (Adulto)",
+                  "Max Zhang (Adulto)",
+                  "Alexander Zhang (Adulto)",
+                  "Mei Zhang (Adulto)",
+                  "James Zhang (Adulto)",
+                  "Akira Zhang (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Transfer and pick up at Ollantaytambo train station.",
+                  "Train ticket to Machu Picchu category Voyager or Expedition.",
+                  "Bus up and down to Machu Picchu.",
+                  "Entrance ticket to the citadel of Machu Picchu.",
+                  "Guided tour in the citadel of Machu Picchu by a certified guide."
+            ],
+            "pickup": "Hotel Cusco Boutique, Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P18",
+            "supplierConfirmation": "VIA-MKT-841163",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "4.239,20 USD",
+            "passports": "FIC-A3438410, FIC-P1337504, FIC-X4900195, FIC-A6518554, FIC-A2411417, FIC-P3663404, FIC-A7313266, FIC-A9080846",
+            "nationalities": "Netherlands, France, Netherlands, United Kingdom, USA, France, Netherlands, China",
+            "expiry": "APRIL 21 2031, JULY 10 2028, JULY 8 2030, FEBRUARY 1 2029, DECEMBER 1 2028, FEBRUARY 7 2032, APRIL 23 2034, SEPTEMBER 4 2029",
+            "births": "AUGUST 22 1996, AUGUST 16 1968, JANUARY 2 1970, OCTOBER 12 1980, MAY 7 1965, MARCH 9 1972, JUNE 14 1979, JUNE 5 1995",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "sáb, 3 oct 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Bienvenida Ancestral – Cusco",
+            "subtitle": "Bienvenida Ancestral – Cusco 07:00",
+            "traveler": "Chen Bennett",
+            "paxText": "10 adultos",
+            "code": "BR-261003114",
+            "sent": "Enviada 1 oct 2026, 14:05 GMT−5",
+            "phone": "+1 ***-***-1507",
+            "names": [
+                  "Chen Bennett (Adulto)",
+                  "Benjamin Bennett (Adulto)",
+                  "Chen Bennett (Adulto)",
+                  "Emma Bennett (Adulto)",
+                  "Thomas Bennett (Adulto)",
+                  "Samuel Bennett (Adulto)",
+                  "Klaus Bennett (Adulto)",
+                  "Samuel Bennett (Adulto)",
+                  "Nils Bennett (Adulto)",
+                  "Nils Bennett (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Private pick up and drop off from the hotel in Cusco.",
+                  "Ancestral welcome ceremony with Andean host.",
+                  "Pachamama offering materials included.",
+                  "Bilingual assistance before and during the activity."
+            ],
+            "pickup": "Casa Biru Hotel Boutique, Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P20",
+            "supplierConfirmation": "VIA-MKT-125005",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "1.150,00 USD",
+            "passports": "FIC-P6996341, FIC-X6875357, FIC-A8526805, FIC-A5281245, FIC-A2589732, FIC-X2605972, FIC-A6896576, FIC-A8206907, FIC-P3694264, FIC-P7934171",
+            "nationalities": "United Kingdom, Germany, USA, Canada, France, United Kingdom, United Kingdom, USA, Netherlands, United Kingdom",
+            "expiry": "APRIL 8 2029, DECEMBER 6 2029, DECEMBER 1 2029, JULY 9 2033, FEBRUARY 25 2032, APRIL 16 2034, APRIL 8 2030, APRIL 7 2028, DECEMBER 17 2028, APRIL 10 2033",
+            "births": "NOVEMBER 26 1995, JUNE 21 1996, JUNE 12 1994, AUGUST 8 1991, NOVEMBER 6 1967, OCTOBER 1 1988, NOVEMBER 17 1990, OCTOBER 14 1995, MAY 11 1971, JANUARY 27 1967",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "jue, 8 oct 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Machu Picchu Full Day con tren Voyager",
+            "subtitle": "Machu Picchu Full Day con tren Voyager 11:00",
+            "traveler": "Daniel Watanabe",
+            "paxText": "8 adultos",
+            "code": "BR-261008115",
+            "sent": "Enviada 1 oct 2026, 17:12 GMT−5",
+            "phone": "+1 ***-***-1074",
+            "names": [
+                  "Daniel Watanabe (Adulto)",
+                  "Oliver Watanabe (Adulto)",
+                  "Freya Watanabe (Adulto)",
+                  "Daichi Watanabe (Adulto)",
+                  "Sophia Watanabe (Adulto)",
+                  "Daichi Watanabe (Adulto)",
+                  "Oscar Watanabe (Adulto)",
+                  "Charlotte Watanabe (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Transfer and pick up at Ollantaytambo train station.",
+                  "Train ticket to Machu Picchu category Voyager or Expedition.",
+                  "Bus up and down to Machu Picchu.",
+                  "Entrance ticket to the citadel of Machu Picchu.",
+                  "Guided tour in the citadel of Machu Picchu by a certified guide."
+            ],
+            "pickup": "Novotel Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P18",
+            "supplierConfirmation": "VIA-MKT-731067",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "3.919,20 USD",
+            "passports": "FIC-A8030779, FIC-X9664361, FIC-X2827206, FIC-P2245527, FIC-P6546803, FIC-X5089808, FIC-P1290498, FIC-A1460858",
+            "nationalities": "Australia, Netherlands, Netherlands, Germany, Canada, China, USA, Germany",
+            "expiry": "JULY 27 2033, DECEMBER 23 2031, APRIL 17 2036, JULY 26 2028, JULY 5 2035, FEBRUARY 3 2029, DECEMBER 27 2035, DECEMBER 25 2030",
+            "births": "JANUARY 7 1986, MARCH 28 1998, JUNE 7 1993, JUNE 1 1994, MARCH 9 1977, JUNE 26 1976, MAY 24 1973, AUGUST 14 1981",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "mar, 13 oct 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Machu Picchu Full Day con tren Voyager",
+            "subtitle": "Machu Picchu Full Day con tren Voyager 04:00",
+            "traveler": "Claire Dubois",
+            "paxText": "2 adultos",
+            "code": "BR-261013116",
+            "sent": "Enviada 19 oct 2026, 17:12 GMT−5",
+            "phone": "+1 ***-***-6697",
+            "names": [
+                  "Claire Dubois (Adulto)",
+                  "Wei Dubois (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Transfer and pick up at Ollantaytambo train station.",
+                  "Train ticket to Machu Picchu category Voyager or Expedition.",
+                  "Bus up and down to Machu Picchu.",
+                  "Entrance ticket to the citadel of Machu Picchu.",
+                  "Guided tour in the citadel of Machu Picchu by a certified guide."
+            ],
+            "pickup": "Palacio Manco Capac, Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P18",
+            "supplierConfirmation": "VIA-MKT-209309",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "979,80 USD",
+            "passports": "FIC-X5441400, FIC-P6661179",
+            "nationalities": "Canada, United Kingdom",
+            "expiry": "FEBRUARY 11 2030, APRIL 4 2033",
+            "births": "NOVEMBER 19 1985, JANUARY 15 1996",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "sáb, 17 oct 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Tour Montaña de Colores – Vinicunca",
+            "subtitle": "Tour Montaña de Colores – Vinicunca 04:00",
+            "traveler": "Grace Yamamoto",
+            "paxText": "4 adultos",
+            "code": "BR-261017117",
+            "sent": "Enviada 27 oct 2026, 14:05 GMT−5",
+            "phone": "+1 ***-***-1344",
+            "names": [
+                  "Grace Yamamoto (Adulto)",
+                  "Daichi Yamamoto (Adulto)",
+                  "Daichi Yamamoto (Adulto)",
+                  "Oscar Yamamoto (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Early hotel pick up.",
+                  "Tourist transport to the trailhead.",
+                  "Guided hike to Rainbow Mountain.",
+                  "Breakfast and lunch included.",
+                  "Permanent assistance during the tour."
+            ],
+            "pickup": "Wyndham Costa del Sol Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P1",
+            "supplierConfirmation": "VIA-MKT-674291",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "300,00 USD",
+            "passports": "FIC-P2896461, FIC-A3124681, FIC-P8322304, FIC-A7774932",
+            "nationalities": "Australia, South Korea, China, China",
+            "expiry": "SEPTEMBER 9 2033, DECEMBER 5 2036, SEPTEMBER 10 2035, APRIL 12 2029",
+            "births": "JANUARY 25 1979, MAY 22 1989, NOVEMBER 16 1971, JANUARY 6 1973",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "jue, 22 oct 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Tour Montaña de Colores – Vinicunca",
+            "subtitle": "Tour Montaña de Colores – Vinicunca 11:00",
+            "traveler": "Emma Petrov",
+            "paxText": "12 adultos",
+            "code": "BR-261022118",
+            "sent": "Enviada 21 oct 2026, 10:12 GMT−5",
+            "phone": "+1 ***-***-3068",
+            "names": [
+                  "Emma Petrov (Adulto)",
+                  "Lars Petrov (Adulto)",
+                  "Satoshi Petrov (Adulto)",
+                  "William Petrov (Adulto)",
+                  "Min-Jae Petrov (Adulto)",
+                  "Thomas Petrov (Adulto)",
+                  "Emily Petrov (Adulto)",
+                  "Daniel Petrov (Adulto)",
+                  "Kenji Petrov (Adulto)",
+                  "Olivia Petrov (Adulto)",
+                  "Ethan Petrov (Adulto)",
+                  "Isabella Petrov (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Early hotel pick up.",
+                  "Tourist transport to the trailhead.",
+                  "Guided hike to Rainbow Mountain.",
+                  "Breakfast and lunch included.",
+                  "Permanent assistance during the tour."
+            ],
+            "pickup": "Antigua Casona San Blas, Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P1",
+            "supplierConfirmation": "VIA-MKT-262610",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "900,00 USD",
+            "passports": "FIC-P5179216, FIC-X9378434, FIC-P6003268, FIC-A6853189, FIC-P1410295, FIC-P2742438, FIC-A7250434, FIC-X8475806, FIC-P8112936, FIC-X6575001, FIC-X3719813, FIC-X6465620",
+            "nationalities": "USA, United Kingdom, Japan, Netherlands, Japan, Australia, USA, United Kingdom, Japan, Netherlands, USA, Canada",
+            "expiry": "JULY 18 2028, FEBRUARY 27 2031, JULY 6 2031, JULY 11 2031, APRIL 21 2031, SEPTEMBER 5 2035, FEBRUARY 21 2032, FEBRUARY 9 2033, JULY 27 2030, FEBRUARY 25 2035, SEPTEMBER 4 2036, FEBRUARY 6 2036",
+            "births": "MARCH 27 1984, AUGUST 19 1989, JANUARY 6 1989, MAY 21 1973, OCTOBER 3 1986, JUNE 8 1975, JANUARY 20 1970, JUNE 18 1968, OCTOBER 23 1997, AUGUST 17 1966, MAY 20 1970, MARCH 21 1967",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "dom, 25 oct 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Tour Montaña de Colores – Vinicunca",
+            "subtitle": "Tour Montaña de Colores – Vinicunca 07:00",
+            "traveler": "Alexander Novak",
+            "paxText": "4 adultos",
+            "code": "BR-261025119",
+            "sent": "Enviada 24 oct 2026, 16:05 GMT−5",
+            "phone": "+1 ***-***-9076",
+            "names": [
+                  "Alexander Novak (Adulto)",
+                  "Klaus Novak (Adulto)",
+                  "Nils Novak (Adulto)",
+                  "Samuel Novak (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Early hotel pick up.",
+                  "Tourist transport to the trailhead.",
+                  "Guided hike to Rainbow Mountain.",
+                  "Breakfast and lunch included.",
+                  "Permanent assistance during the tour."
+            ],
+            "pickup": "Antigua Casona San Blas, Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P1",
+            "supplierConfirmation": "VIA-MKT-987584",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "300,00 USD",
+            "passports": "FIC-P1293972, FIC-X8644722, FIC-A9833865, FIC-X1433722",
+            "nationalities": "Japan, Netherlands, Germany, Netherlands",
+            "expiry": "APRIL 3 2033, SEPTEMBER 28 2035, SEPTEMBER 24 2036, FEBRUARY 15 2036",
+            "births": "OCTOBER 17 1991, JANUARY 14 1982, AUGUST 24 1974, AUGUST 5 1984",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "vie, 30 oct 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Machu Picchu Full Day con tren Voyager",
+            "subtitle": "Machu Picchu Full Day con tren Voyager 08:00",
+            "traveler": "Chen Schneider",
+            "paxText": "6 adultos",
+            "code": "BR-261030120",
+            "sent": "Enviada 28 oct 2026, 18:45 GMT−5",
+            "phone": "+1 ***-***-2270",
+            "names": [
+                  "Chen Schneider (Adulto)",
+                  "Oliver Schneider (Adulto)",
+                  "Ethan Schneider (Adulto)",
+                  "Max Schneider (Adulto)",
+                  "Thomas Schneider (Adulto)",
+                  "Nils Schneider (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Transfer and pick up at Ollantaytambo train station.",
+                  "Train ticket to Machu Picchu category Voyager or Expedition.",
+                  "Bus up and down to Machu Picchu.",
+                  "Entrance ticket to the citadel of Machu Picchu.",
+                  "Guided tour in the citadel of Machu Picchu by a certified guide."
+            ],
+            "pickup": "Antigua Casona San Blas, Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P18",
+            "supplierConfirmation": "VIA-MKT-169124",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "3.179,40 USD",
+            "passports": "FIC-A4899377, FIC-P4707929, FIC-X8299435, FIC-X9469240, FIC-P9485214, FIC-X7435622",
+            "nationalities": "USA, Japan, China, Germany, USA, Netherlands",
+            "expiry": "DECEMBER 6 2034, DECEMBER 6 2033, FEBRUARY 3 2032, DECEMBER 14 2036, JULY 25 2032, FEBRUARY 5 2035",
+            "births": "AUGUST 5 1965, JUNE 25 1984, MARCH 18 1987, JUNE 1 1976, JANUARY 6 1977, JUNE 19 1979",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "lun, 2 nov 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Valle Sagrado de los Incas",
+            "subtitle": "Valle Sagrado de los Incas 07:00",
+            "traveler": "Mia Zhang",
+            "paxText": "2 adultos",
+            "code": "BR-261102121",
+            "sent": "Enviada 7 nov 2026, 11:45 GMT−5",
+            "phone": "+1 ***-***-6794",
+            "names": [
+                  "Mia Zhang (Adulto)",
+                  "Ethan Zhang (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Hotel pick up in Cusco.",
+                  "Guided tour through the Sacred Valley.",
+                  "Transport in tourist vehicle.",
+                  "Local guide and permanent assistance.",
+                  "Drop off in Cusco or Ollantaytambo."
+            ],
+            "pickup": "Casa Biru Hotel Boutique, Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P6",
+            "supplierConfirmation": "VIA-MKT-649380",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "299,80 USD",
+            "passports": "FIC-X5916688, FIC-P4826051",
+            "nationalities": "USA, USA",
+            "expiry": "APRIL 1 2030, SEPTEMBER 17 2031",
+            "births": "OCTOBER 3 1978, JUNE 3 1966",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "mié, 4 nov 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Machu Picchu Full Day con tren Vistadome Observatory",
+            "subtitle": "Machu Picchu Full Day con tren Vistadome Observatory 07:00",
+            "traveler": "Joon Bennett",
+            "paxText": "6 adultos",
+            "code": "BR-261104122",
+            "sent": "Enviada 12 nov 2026, 13:12 GMT−5",
+            "phone": "+1 ***-***-5258",
+            "names": [
+                  "Joon Bennett (Adulto)",
+                  "Hiroshi Bennett (Adulto)",
+                  "Samuel Bennett (Adulto)",
+                  "James Bennett (Adulto)",
+                  "Benjamin Bennett (Adulto)",
+                  "Nils Bennett (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Transfer and pick up at Ollantaytambo train station.",
+                  "Train ticket to Machu Picchu category Vistadome Observatory or Expedition.",
+                  "Bus up and down to Machu Picchu.",
+                  "Entrance ticket to the citadel of Machu Picchu.",
+                  "Guided tour in the citadel of Machu Picchu by a certified guide.",
+                  "Permanent assistance and guidance 24/7 by an assigned travel agent."
+            ],
+            "pickup": "Tierra Viva Cusco Centro",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P15",
+            "supplierConfirmation": "VIA-MKT-413361",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "3.899,40 USD",
+            "passports": "FIC-P4417131, FIC-A3078831, FIC-X2005457, FIC-P2888147, FIC-P7224112, FIC-X7017934",
+            "nationalities": "Netherlands, Japan, Japan, Canada, Canada, Australia",
+            "expiry": "FEBRUARY 4 2031, SEPTEMBER 20 2034, FEBRUARY 14 2029, JULY 26 2036, APRIL 12 2031, SEPTEMBER 6 2034",
+            "births": "AUGUST 26 1992, JUNE 8 1973, JUNE 10 1992, OCTOBER 28 1973, MAY 24 1973, MARCH 6 1970",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "lun, 9 nov 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "No disponible",
+            "available": false,
+            "title": "Bienvenida Ancestral – Cusco",
+            "subtitle": "Bienvenida Ancestral – Cusco 04:00",
+            "traveler": "Mason Tanaka",
+            "paxText": "2 adultos",
+            "code": "BR-261109123",
+            "sent": "Enviada 7 nov 2026, 11:24 GMT−5",
+            "phone": "+1 ***-***-7604",
+            "names": [
+                  "Mason Tanaka (Adulto)",
+                  "Min-Jae Tanaka (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Private pick up and drop off from the hotel in Cusco.",
+                  "Ancestral welcome ceremony with Andean host.",
+                  "Pachamama offering materials included.",
+                  "Bilingual assistance before and during the activity."
+            ],
+            "pickup": "Sonesta Hotel Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P20",
+            "supplierConfirmation": "VIA-MKT-934059",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "170,00 USD",
+            "passports": "FIC-A3532372, FIC-P5898779",
+            "nationalities": "China, Australia",
+            "expiry": "JULY 7 2036, DECEMBER 5 2034",
+            "births": "OCTOBER 2 1966, NOVEMBER 9 1976",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "jue, 12 nov 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Machu Picchu Full Day con tren Voyager",
+            "subtitle": "Machu Picchu Full Day con tren Voyager 08:00",
+            "traveler": "Sophia Johnson",
+            "paxText": "2 adultos",
+            "code": "BR-261112124",
+            "sent": "Enviada 5 nov 2026, 08:24 GMT−5",
+            "phone": "+1 ***-***-3632",
+            "names": [
+                  "Sophia Johnson (Adulto)",
+                  "Wei Johnson (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Transfer and pick up at Ollantaytambo train station.",
+                  "Train ticket to Machu Picchu category Voyager or Expedition.",
+                  "Bus up and down to Machu Picchu.",
+                  "Entrance ticket to the citadel of Machu Picchu.",
+                  "Guided tour in the citadel of Machu Picchu by a certified guide."
+            ],
+            "pickup": "Hotel Cusco Boutique, Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P18",
+            "supplierConfirmation": "VIA-MKT-224082",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "1.179,80 USD",
+            "passports": "FIC-A7801152, FIC-X9601363",
+            "nationalities": "China, Australia",
+            "expiry": "DECEMBER 8 2030, JULY 23 2031",
+            "births": "OCTOBER 5 1995, NOVEMBER 7 1976",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "lun, 16 nov 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Tour Montaña de Colores – Vinicunca",
+            "subtitle": "Tour Montaña de Colores – Vinicunca 07:00",
+            "traveler": "Henry Rossi",
+            "paxText": "2 adultos",
+            "code": "BR-261116125",
+            "sent": "Enviada 24 nov 2026, 10:05 GMT−5",
+            "phone": "+1 ***-***-3334",
+            "names": [
+                  "Henry Rossi (Adulto)",
+                  "Haruto Rossi (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Early hotel pick up.",
+                  "Tourist transport to the trailhead.",
+                  "Guided hike to Rainbow Mountain.",
+                  "Breakfast and lunch included.",
+                  "Permanent assistance during the tour."
+            ],
+            "pickup": "Hotel Cusco Boutique, Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P1",
+            "supplierConfirmation": "VIA-MKT-157135",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "259,80 USD",
+            "passports": "FIC-A6683045, FIC-A8356317",
+            "nationalities": "Germany, Germany",
+            "expiry": "DECEMBER 23 2028, SEPTEMBER 11 2032",
+            "births": "MARCH 1 1967, MARCH 6 1967",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "jue, 19 nov 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Machu Picchu Full Day con tren Vistadome Observatory",
+            "subtitle": "Machu Picchu Full Day con tren Vistadome Observatory 07:00",
+            "traveler": "Isabella Taylor",
+            "paxText": "2 adultos",
+            "code": "BR-261119126",
+            "sent": "Enviada 8 nov 2026, 18:12 GMT−5",
+            "phone": "+1 ***-***-4353",
+            "names": [
+                  "Isabella Taylor (Adulto)",
+                  "Leo Taylor (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Transfer and pick up at Ollantaytambo train station.",
+                  "Train ticket to Machu Picchu category Vistadome Observatory or Expedition.",
+                  "Bus up and down to Machu Picchu.",
+                  "Entrance ticket to the citadel of Machu Picchu.",
+                  "Guided tour in the citadel of Machu Picchu by a certified guide.",
+                  "Permanent assistance and guidance 24/7 by an assigned travel agent."
+            ],
+            "pickup": "Hotel Rumi Punku, Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P15",
+            "supplierConfirmation": "VIA-MKT-258101",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "1.251,80 USD",
+            "passports": "FIC-A9808435, FIC-A9339852",
+            "nationalities": "France, France",
+            "expiry": "DECEMBER 23 2031, APRIL 2 2029",
+            "births": "MAY 18 1975, OCTOBER 27 1993",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "mar, 24 nov 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "No disponible",
+            "available": false,
+            "title": "Valle Sagrado de los Incas",
+            "subtitle": "Valle Sagrado de los Incas 07:00",
+            "traveler": "Logan Smith",
+            "paxText": "16 adultos",
+            "code": "BR-261124127",
+            "sent": "Enviada 9 nov 2026, 15:05 GMT−5",
+            "phone": "+1 ***-***-4302",
+            "names": [
+                  "Logan Smith (Adulto)",
+                  "Oliver Smith (Adulto)",
+                  "Leo Smith (Adulto)",
+                  "Hiroshi Smith (Adulto)",
+                  "Liang Smith (Adulto)",
+                  "Emma Smith (Adulto)",
+                  "Joon Smith (Adulto)",
+                  "Aiko Smith (Adulto)",
+                  "Oscar Smith (Adulto)",
+                  "Nils Smith (Adulto)",
+                  "Max Smith (Adulto)",
+                  "Grace Smith (Adulto)",
+                  "Samuel Smith (Adulto)",
+                  "Kenji Smith (Adulto)",
+                  "Max Smith (Adulto)",
+                  "Hannah Smith (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Hotel pick up in Cusco.",
+                  "Guided tour through the Sacred Valley.",
+                  "Transport in tourist vehicle.",
+                  "Local guide and permanent assistance.",
+                  "Drop off in Cusco or Ollantaytambo."
+            ],
+            "pickup": "Antigua Casona San Blas, Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P6",
+            "supplierConfirmation": "VIA-MKT-523573",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "1.438,40 USD",
+            "passports": "FIC-X6505784, FIC-X3825356, FIC-P3742078, FIC-A6869147, FIC-A2280492, FIC-X8578330, FIC-A2238006, FIC-P5025680, FIC-A4197250, FIC-A2635999, FIC-A3916803, FIC-P5969865, FIC-P3562078, FIC-X4930518, FIC-A4040109, FIC-X6192814",
+            "nationalities": "Australia, South Korea, South Korea, Japan, Australia, Canada, South Korea, USA, Canada, China, South Korea, Netherlands, Canada, Germany, United Kingdom, China",
+            "expiry": "APRIL 8 2031, SEPTEMBER 22 2034, FEBRUARY 19 2033, APRIL 12 2032, APRIL 9 2032, FEBRUARY 13 2035, SEPTEMBER 26 2031, APRIL 19 2035, APRIL 28 2028, APRIL 22 2032, FEBRUARY 17 2036, DECEMBER 10 2028, JULY 19 2035, APRIL 18 2031, SEPTEMBER 4 2035, APRIL 12 2028",
+            "births": "JANUARY 23 1986, JANUARY 7 1968, OCTOBER 28 1989, MAY 11 1984, NOVEMBER 24 1989, AUGUST 21 1979, JANUARY 15 1995, MAY 7 1982, NOVEMBER 3 1995, MARCH 13 1995, NOVEMBER 22 1968, AUGUST 28 1972, MAY 13 1980, MAY 13 1968, NOVEMBER 15 1971, MARCH 1 1970",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "sáb, 28 nov 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Valle Sagrado de los Incas",
+            "subtitle": "Valle Sagrado de los Incas 11:00",
+            "traveler": "Mason Fischer",
+            "paxText": "3 adultos",
+            "code": "BR-261128128",
+            "sent": "Enviada 23 nov 2026, 18:24 GMT−5",
+            "phone": "+1 ***-***-8021",
+            "names": [
+                  "Mason Fischer (Adulto)",
+                  "Olivia Fischer (Adulto)",
+                  "Leo Fischer (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Hotel pick up in Cusco.",
+                  "Guided tour through the Sacred Valley.",
+                  "Transport in tourist vehicle.",
+                  "Local guide and permanent assistance.",
+                  "Drop off in Cusco or Ollantaytambo."
+            ],
+            "pickup": "Casa Andina Standard Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P6",
+            "supplierConfirmation": "VIA-MKT-162922",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "359,70 USD",
+            "passports": "FIC-X7119997, FIC-X7890387, FIC-X4367279",
+            "nationalities": "Australia, USA, South Korea",
+            "expiry": "APRIL 12 2033, JULY 9 2035, JULY 2 2028",
+            "births": "NOVEMBER 11 1994, JANUARY 17 1965, NOVEMBER 23 1970",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "mar, 1 dic 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Tour Montaña de Colores – Vinicunca",
+            "subtitle": "Tour Montaña de Colores – Vinicunca 11:00",
+            "traveler": "Amelia Yamamoto",
+            "paxText": "3 adultos",
+            "code": "BR-261201129",
+            "sent": "Enviada 9 dic 2026, 15:12 GMT−5",
+            "phone": "+1 ***-***-9028",
+            "names": [
+                  "Amelia Yamamoto (Adulto)",
+                  "Yuki Yamamoto (Adulto)",
+                  "Alexander Yamamoto (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Early hotel pick up.",
+                  "Tourist transport to the trailhead.",
+                  "Guided hike to Rainbow Mountain.",
+                  "Breakfast and lunch included.",
+                  "Permanent assistance during the tour."
+            ],
+            "pickup": "Antigua Casona San Blas, Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P1",
+            "supplierConfirmation": "VIA-MKT-825696",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "389,70 USD",
+            "passports": "FIC-X2966763, FIC-P4522152, FIC-P1114699",
+            "nationalities": "Netherlands, USA, Canada",
+            "expiry": "FEBRUARY 27 2029, APRIL 2 2028, SEPTEMBER 7 2036",
+            "births": "JANUARY 28 1988, NOVEMBER 8 1984, MARCH 19 1983",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "jue, 3 dic 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Bienvenida Ancestral – Cusco",
+            "subtitle": "Bienvenida Ancestral – Cusco 08:00",
+            "traveler": "Liam Whitmore",
+            "paxText": "16 adultos",
+            "code": "BR-261203130",
+            "sent": "Enviada 17 dic 2026, 14:12 GMT−5",
+            "phone": "+1 ***-***-9895",
+            "names": [
+                  "Liam Whitmore (Adulto)",
+                  "Hiroshi Whitmore (Adulto)",
+                  "Lucas Whitmore (Adulto)",
+                  "Erik Whitmore (Adulto)",
+                  "Erik Whitmore (Adulto)",
+                  "Samuel Whitmore (Adulto)",
+                  "Satoshi Whitmore (Adulto)",
+                  "Mason Whitmore (Adulto)",
+                  "George Whitmore (Adulto)",
+                  "Hiroshi Whitmore (Adulto)",
+                  "Liang Whitmore (Adulto)",
+                  "Haruto Whitmore (Adulto)",
+                  "Joon Whitmore (Adulto)",
+                  "Max Whitmore (Adulto)",
+                  "Noah Whitmore (Adulto)",
+                  "Logan Whitmore (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Private pick up and drop off from the hotel in Cusco.",
+                  "Ancestral welcome ceremony with Andean host.",
+                  "Pachamama offering materials included.",
+                  "Bilingual assistance before and during the activity."
+            ],
+            "pickup": "Tierra Viva Cusco Centro",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P20",
+            "supplierConfirmation": "VIA-MKT-591282",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "1.200,00 USD",
+            "passports": "FIC-P1344353, FIC-A3256207, FIC-P2466004, FIC-X3963305, FIC-X6121872, FIC-A3563827, FIC-X2710740, FIC-P1922129, FIC-X6823827, FIC-P4317263, FIC-P8878589, FIC-P2685724, FIC-X1286800, FIC-A8525592, FIC-A4126036, FIC-A2971398",
+            "nationalities": "France, USA, Canada, South Korea, Australia, South Korea, South Korea, USA, United Kingdom, Japan, Netherlands, China, Germany, Germany, France, Canada",
+            "expiry": "SEPTEMBER 14 2029, SEPTEMBER 20 2033, APRIL 25 2031, APRIL 9 2030, FEBRUARY 1 2035, FEBRUARY 4 2029, JULY 18 2031, SEPTEMBER 20 2028, APRIL 2 2032, JULY 1 2029, FEBRUARY 11 2029, JULY 3 2035, FEBRUARY 27 2034, DECEMBER 14 2035, APRIL 23 2036, DECEMBER 15 2030",
+            "births": "MAY 15 1998, NOVEMBER 5 1979, JANUARY 2 1993, OCTOBER 13 1965, MARCH 22 1992, OCTOBER 26 1969, JUNE 14 1991, MARCH 12 1982, AUGUST 3 1974, MAY 18 1996, NOVEMBER 15 1970, JANUARY 20 1996, MAY 1 1964, JUNE 24 1979, OCTOBER 3 1980, NOVEMBER 13 1989",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "mar, 8 dic 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Machu Picchu Full Day con tren Voyager",
+            "subtitle": "Machu Picchu Full Day con tren Voyager 07:00",
+            "traveler": "Mason Johnson",
+            "paxText": "16 adultos",
+            "code": "BR-261208131",
+            "sent": "Enviada 2 dic 2026, 17:45 GMT−5",
+            "phone": "+1 ***-***-6260",
+            "names": [
+                  "Mason Johnson (Adulto)",
+                  "Klaus Johnson (Adulto)",
+                  "Mason Johnson (Adulto)",
+                  "Max Johnson (Adulto)",
+                  "Noah Johnson (Adulto)",
+                  "Nils Johnson (Adulto)",
+                  "Chloe Johnson (Adulto)",
+                  "Henrik Johnson (Adulto)",
+                  "Henrik Johnson (Adulto)",
+                  "Ethan Johnson (Adulto)",
+                  "Daniel Johnson (Adulto)",
+                  "Benjamin Johnson (Adulto)",
+                  "Leo Johnson (Adulto)",
+                  "Thomas Johnson (Adulto)",
+                  "Claire Johnson (Adulto)",
+                  "Hiroshi Johnson (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Transfer and pick up at Ollantaytambo train station.",
+                  "Train ticket to Machu Picchu category Voyager or Expedition.",
+                  "Bus up and down to Machu Picchu.",
+                  "Entrance ticket to the citadel of Machu Picchu.",
+                  "Guided tour in the citadel of Machu Picchu by a certified guide."
+            ],
+            "pickup": "Hotel Rumi Punku, Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P18",
+            "supplierConfirmation": "VIA-MKT-444186",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "8.958,40 USD",
+            "passports": "FIC-P4197164, FIC-X3712376, FIC-P6212296, FIC-P3236276, FIC-A8005963, FIC-A2971490, FIC-P8225330, FIC-P1810960, FIC-P1379337, FIC-X1248824, FIC-A7282219, FIC-X5712033, FIC-X4203763, FIC-P3538273, FIC-A9624571, FIC-P5492544",
+            "nationalities": "Germany, Japan, Canada, Australia, Canada, South Korea, USA, South Korea, Canada, Canada, Germany, France, France, Canada, Netherlands, Japan",
+            "expiry": "APRIL 1 2028, APRIL 9 2035, DECEMBER 2 2032, JULY 3 2034, FEBRUARY 10 2029, JULY 17 2031, FEBRUARY 23 2031, DECEMBER 9 2033, APRIL 14 2028, SEPTEMBER 14 2036, JULY 11 2036, JULY 10 2033, SEPTEMBER 6 2029, DECEMBER 24 2031, APRIL 2 2032, DECEMBER 22 2030",
+            "births": "MAY 12 1994, MAY 2 1976, JANUARY 15 1986, JUNE 1 1989, JANUARY 9 1996, OCTOBER 4 1967, JUNE 11 1983, AUGUST 3 1979, MAY 3 1966, OCTOBER 26 1977, AUGUST 23 1976, MAY 3 1983, AUGUST 26 1994, OCTOBER 13 1983, JANUARY 7 1971, JANUARY 8 1977",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "dom, 13 dic 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Bienvenida Ancestral – Cusco",
+            "subtitle": "Bienvenida Ancestral – Cusco 07:00",
+            "traveler": "Sophia Taylor",
+            "paxText": "2 adultos",
+            "code": "BR-261213132",
+            "sent": "Enviada 17 dic 2026, 14:12 GMT−5",
+            "phone": "+1 ***-***-6560",
+            "names": [
+                  "Sophia Taylor (Adulto)",
+                  "Freya Taylor (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Private pick up and drop off from the hotel in Cusco.",
+                  "Ancestral welcome ceremony with Andean host.",
+                  "Pachamama offering materials included.",
+                  "Bilingual assistance before and during the activity."
+            ],
+            "pickup": "Sonesta Hotel Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P20",
+            "supplierConfirmation": "VIA-MKT-819107",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "230,00 USD",
+            "passports": "FIC-A1214668, FIC-X8299734",
+            "nationalities": "USA, Netherlands",
+            "expiry": "FEBRUARY 15 2028, FEBRUARY 3 2028",
+            "births": "AUGUST 14 1974, MARCH 28 1991",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "mié, 16 dic 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Bienvenida Ancestral – Cusco",
+            "subtitle": "Bienvenida Ancestral – Cusco 07:00",
+            "traveler": "Arthur Müller",
+            "paxText": "3 adultos",
+            "code": "BR-261216133",
+            "sent": "Enviada 3 dic 2026, 14:38 GMT−5",
+            "phone": "+1 ***-***-1514",
+            "names": [
+                  "Arthur Müller (Adulto)",
+                  "Kenji Müller (Adulto)",
+                  "Isabella Müller (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Private pick up and drop off from the hotel in Cusco.",
+                  "Ancestral welcome ceremony with Andean host.",
+                  "Pachamama offering materials included.",
+                  "Bilingual assistance before and during the activity."
+            ],
+            "pickup": "Casa Biru Hotel Boutique, Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P20",
+            "supplierConfirmation": "VIA-MKT-625327",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "225,00 USD",
+            "passports": "FIC-P4717124, FIC-P5413484, FIC-P9421257",
+            "nationalities": "United Kingdom, Netherlands, United Kingdom",
+            "expiry": "SEPTEMBER 23 2030, APRIL 2 2034, FEBRUARY 9 2028",
+            "births": "AUGUST 24 1990, NOVEMBER 28 1981, JANUARY 17 1989",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "sáb, 19 dic 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "No disponible",
+            "available": false,
+            "title": "Tour Montaña de Colores – Vinicunca",
+            "subtitle": "Tour Montaña de Colores – Vinicunca 08:00",
+            "traveler": "Olivia Liu",
+            "paxText": "12 adultos",
+            "code": "BR-261219134",
+            "sent": "Enviada 2 dic 2026, 16:38 GMT−5",
+            "phone": "+1 ***-***-7222",
+            "names": [
+                  "Olivia Liu (Adulto)",
+                  "George Liu (Adulto)",
+                  "Aiko Liu (Adulto)",
+                  "Max Liu (Adulto)",
+                  "Chen Liu (Adulto)",
+                  "Alexander Liu (Adulto)",
+                  "Emma Liu (Adulto)",
+                  "Emily Liu (Adulto)",
+                  "Arthur Liu (Adulto)",
+                  "Emily Liu (Adulto)",
+                  "Johannes Liu (Adulto)",
+                  "Sophie Liu (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Early hotel pick up.",
+                  "Tourist transport to the trailhead.",
+                  "Guided hike to Rainbow Mountain.",
+                  "Breakfast and lunch included.",
+                  "Permanent assistance during the tour."
+            ],
+            "pickup": "Antigua Casona San Blas, Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P1",
+            "supplierConfirmation": "VIA-MKT-779151",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "1.318,80 USD",
+            "passports": "FIC-X4284453, FIC-P5668509, FIC-P1556041, FIC-P9474719, FIC-X4488553, FIC-X8052834, FIC-A6519548, FIC-P7631096, FIC-X2175756, FIC-A6275153, FIC-X3333289, FIC-X2508315",
+            "nationalities": "Germany, Japan, France, United Kingdom, Japan, USA, USA, Australia, South Korea, Germany, United Kingdom, China",
+            "expiry": "APRIL 5 2030, DECEMBER 27 2029, DECEMBER 21 2030, APRIL 22 2031, APRIL 24 2029, SEPTEMBER 15 2030, JULY 7 2034, JULY 5 2029, DECEMBER 16 2034, DECEMBER 1 2035, FEBRUARY 15 2033, APRIL 14 2032",
+            "births": "AUGUST 18 1993, NOVEMBER 2 1982, NOVEMBER 6 1988, OCTOBER 23 1985, MAY 4 1977, OCTOBER 25 1994, OCTOBER 2 1998, JANUARY 9 1973, JANUARY 21 1994, AUGUST 13 1976, AUGUST 6 1974, AUGUST 1 1992",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "jue, 24 dic 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Tour Montaña de Colores – Vinicunca",
+            "subtitle": "Tour Montaña de Colores – Vinicunca 11:00",
+            "traveler": "Hiroshi Coleman",
+            "paxText": "1 adulto",
+            "code": "BR-261224135",
+            "sent": "Enviada 20 dic 2026, 08:24 GMT−5",
+            "phone": "+1 ***-***-6835",
+            "names": [
+                  "Hiroshi Coleman (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Early hotel pick up.",
+                  "Tourist transport to the trailhead.",
+                  "Guided hike to Rainbow Mountain.",
+                  "Breakfast and lunch included.",
+                  "Permanent assistance during the tour."
+            ],
+            "pickup": "Sonesta Hotel Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P1",
+            "supplierConfirmation": "VIA-MKT-599939",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "109,90 USD",
+            "passports": "FIC-P8446532",
+            "nationalities": "Australia",
+            "expiry": "APRIL 25 2028",
+            "births": "MARCH 1 1981",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "lun, 28 dic 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Machu Picchu Full Day con tren Vistadome Observatory",
+            "subtitle": "Machu Picchu Full Day con tren Vistadome Observatory 07:00",
+            "traveler": "Johannes Taylor",
+            "paxText": "3 adultos",
+            "code": "BR-261228136",
+            "sent": "Enviada 20 dic 2026, 14:05 GMT−5",
+            "phone": "+1 ***-***-1968",
+            "names": [
+                  "Johannes Taylor (Adulto)",
+                  "Liang Taylor (Adulto)",
+                  "Erik Taylor (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Transfer and pick up at Ollantaytambo train station.",
+                  "Train ticket to Machu Picchu category Vistadome Observatory or Expedition.",
+                  "Bus up and down to Machu Picchu.",
+                  "Entrance ticket to the citadel of Machu Picchu.",
+                  "Guided tour in the citadel of Machu Picchu by a certified guide.",
+                  "Permanent assistance and guidance 24/7 by an assigned travel agent."
+            ],
+            "pickup": "Hotel Cusco Boutique, Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P15",
+            "supplierConfirmation": "VIA-MKT-839454",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "1.877,70 USD",
+            "passports": "FIC-P6360644, FIC-X9018615, FIC-A8443416",
+            "nationalities": "United Kingdom, Australia, South Korea",
+            "expiry": "DECEMBER 28 2031, SEPTEMBER 26 2029, SEPTEMBER 28 2032",
+            "births": "AUGUST 10 1979, MARCH 14 1978, AUGUST 8 1995",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "jue, 31 dic 2026",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Tour Montaña de Colores – Vinicunca",
+            "subtitle": "Tour Montaña de Colores – Vinicunca 04:00",
+            "traveler": "Daniel Johnson",
+            "paxText": "3 adultos",
+            "code": "BR-261231137",
+            "sent": "Enviada 23 dic 2026, 14:24 GMT−5",
+            "phone": "+1 ***-***-5870",
+            "names": [
+                  "Daniel Johnson (Adulto)",
+                  "Noah Johnson (Adulto)",
+                  "Benjamin Johnson (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Early hotel pick up.",
+                  "Tourist transport to the trailhead.",
+                  "Guided hike to Rainbow Mountain.",
+                  "Breakfast and lunch included.",
+                  "Permanent assistance during the tour."
+            ],
+            "pickup": "Tierra Viva Cusco Centro",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P1",
+            "supplierConfirmation": "VIA-MKT-985269",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "329,70 USD",
+            "passports": "FIC-A4588135, FIC-A3825888, FIC-X4757314",
+            "nationalities": "Japan, Canada, United Kingdom",
+            "expiry": "SEPTEMBER 7 2029, SEPTEMBER 21 2031, DECEMBER 20 2036",
+            "births": "MAY 5 1981, OCTOBER 7 1965, JANUARY 20 1996",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "mar, 5 ene 2027",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Valle Sagrado de los Incas",
+            "subtitle": "Valle Sagrado de los Incas 08:00",
+            "traveler": "Alexander Bianchi",
+            "paxText": "4 adultos",
+            "code": "BR-260105138",
+            "sent": "Enviada 25 ene 2027, 12:24 GMT−5",
+            "phone": "+1 ***-***-9638",
+            "names": [
+                  "Alexander Bianchi (Adulto)",
+                  "Alexander Bianchi (Adulto)",
+                  "Benjamin Bianchi (Adulto)",
+                  "Chen Bianchi (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Hotel pick up in Cusco.",
+                  "Guided tour through the Sacred Valley.",
+                  "Transport in tourist vehicle.",
+                  "Local guide and permanent assistance.",
+                  "Drop off in Cusco or Ollantaytambo."
+            ],
+            "pickup": "Novotel Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P6",
+            "supplierConfirmation": "VIA-MKT-224887",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "599,60 USD",
+            "passports": "FIC-P6555795, FIC-A3616168, FIC-A4240758, FIC-A9507307",
+            "nationalities": "Netherlands, United Kingdom, Japan, Germany",
+            "expiry": "APRIL 14 2035, SEPTEMBER 25 2035, JULY 25 2029, APRIL 24 2034",
+            "births": "AUGUST 13 1971, JANUARY 8 1976, JANUARY 5 1975, MAY 21 1972",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "sáb, 9 ene 2027",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Machu Picchu Full Day con tren Vistadome Observatory",
+            "subtitle": "Machu Picchu Full Day con tren Vistadome Observatory 07:00",
+            "traveler": "Amelia Smith",
+            "paxText": "6 adultos",
+            "code": "BR-260109139",
+            "sent": "Enviada 19 ene 2027, 15:24 GMT−5",
+            "phone": "+1 ***-***-2933",
+            "names": [
+                  "Amelia Smith (Adulto)",
+                  "Oliver Smith (Adulto)",
+                  "Akira Smith (Adulto)",
+                  "Daniel Smith (Adulto)",
+                  "Nils Smith (Adulto)",
+                  "Isabella Smith (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Transfer and pick up at Ollantaytambo train station.",
+                  "Train ticket to Machu Picchu category Vistadome Observatory or Expedition.",
+                  "Bus up and down to Machu Picchu.",
+                  "Entrance ticket to the citadel of Machu Picchu.",
+                  "Guided tour in the citadel of Machu Picchu by a certified guide.",
+                  "Permanent assistance and guidance 24/7 by an assigned travel agent."
+            ],
+            "pickup": "Antigua Casona San Blas, Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P15",
+            "supplierConfirmation": "VIA-MKT-771647",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "3.899,40 USD",
+            "passports": "FIC-A4724862, FIC-A5046953, FIC-A5901479, FIC-A7289041, FIC-X8812285, FIC-A2282536",
+            "nationalities": "France, China, Australia, China, USA, China",
+            "expiry": "FEBRUARY 23 2035, FEBRUARY 21 2034, FEBRUARY 5 2033, JULY 16 2029, APRIL 1 2032, DECEMBER 21 2035",
+            "births": "NOVEMBER 20 1970, JANUARY 28 1983, AUGUST 18 1991, JUNE 13 1998, MAY 18 1981, JANUARY 19 1973",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "lun, 11 ene 2027",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Bienvenida Ancestral – Cusco",
+            "subtitle": "Bienvenida Ancestral – Cusco 08:00",
+            "traveler": "Daichi Brown",
+            "paxText": "3 adultos",
+            "code": "BR-260111140",
+            "sent": "Enviada 11 ene 2027, 11:45 GMT−5",
+            "phone": "+1 ***-***-7807",
+            "names": [
+                  "Daichi Brown (Adulto)",
+                  "Satoshi Brown (Adulto)",
+                  "Yuki Brown (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Private pick up and drop off from the hotel in Cusco.",
+                  "Ancestral welcome ceremony with Andean host.",
+                  "Pachamama offering materials included.",
+                  "Bilingual assistance before and during the activity."
+            ],
+            "pickup": "Novotel Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P20",
+            "supplierConfirmation": "VIA-MKT-474839",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "345,00 USD",
+            "passports": "FIC-X1615334, FIC-X3705078, FIC-A1183718",
+            "nationalities": "Japan, Netherlands, United Kingdom",
+            "expiry": "DECEMBER 22 2028, APRIL 19 2028, SEPTEMBER 3 2033",
+            "births": "AUGUST 27 1980, JUNE 2 1989, MAY 13 1964",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "jue, 14 ene 2027",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Bienvenida Ancestral – Cusco",
+            "subtitle": "Bienvenida Ancestral – Cusco 08:00",
+            "traveler": "Daniel Novak",
+            "paxText": "2 adultos",
+            "code": "BR-260114141",
+            "sent": "Enviada 2 ene 2027, 15:45 GMT−5",
+            "phone": "+1 ***-***-2340",
+            "names": [
+                  "Daniel Novak (Adulto)",
+                  "Liam Novak (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Private pick up and drop off from the hotel in Cusco.",
+                  "Ancestral welcome ceremony with Andean host.",
+                  "Pachamama offering materials included.",
+                  "Bilingual assistance before and during the activity."
+            ],
+            "pickup": "Palacio Manco Capac, Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P20",
+            "supplierConfirmation": "VIA-MKT-968211",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "230,00 USD",
+            "passports": "FIC-P9708182, FIC-P7512122",
+            "nationalities": "Japan, France",
+            "expiry": "DECEMBER 9 2036, FEBRUARY 13 2030",
+            "births": "JUNE 27 1984, MAY 23 1965",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "mar, 19 ene 2027",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Machu Picchu Overnight 2D/1N",
+            "subtitle": "Machu Picchu Overnight 2D/1N 04:00",
+            "traveler": "Daniel Brown",
+            "paxText": "3 adultos",
+            "code": "BR-260119142",
+            "sent": "Enviada 21 ene 2027, 11:05 GMT−5",
+            "phone": "+1 ***-***-8705",
+            "names": [
+                  "Daniel Brown (Adulto)",
+                  "Amelia Brown (Adulto)",
+                  "Emma Brown (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Transfer to Ollantaytambo train station.",
+                  "Train tickets round trip.",
+                  "Hotel night in Machu Picchu Pueblo.",
+                  "Entrance ticket to Machu Picchu.",
+                  "Consettur bus tickets.",
+                  "Certified private guide."
+            ],
+            "pickup": "Casa Andina Standard Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P22",
+            "supplierConfirmation": "VIA-MKT-275287",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "1.769,70 USD",
+            "passports": "FIC-X1757291, FIC-X8235415, FIC-A6738820",
+            "nationalities": "United Kingdom, Germany, Australia",
+            "expiry": "APRIL 16 2030, SEPTEMBER 26 2036, FEBRUARY 15 2035",
+            "births": "MARCH 22 1967, JUNE 13 1968, MAY 17 1991",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "sáb, 23 ene 2027",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Tour Montaña de Colores – Vinicunca",
+            "subtitle": "Tour Montaña de Colores – Vinicunca 07:00",
+            "traveler": "Charlotte Chen",
+            "paxText": "2 adultos",
+            "code": "BR-260123143",
+            "sent": "Enviada 9 ene 2027, 08:38 GMT−5",
+            "phone": "+1 ***-***-5879",
+            "names": [
+                  "Charlotte Chen (Adulto)",
+                  "Thomas Chen (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Early hotel pick up.",
+                  "Tourist transport to the trailhead.",
+                  "Guided hike to Rainbow Mountain.",
+                  "Breakfast and lunch included.",
+                  "Permanent assistance during the tour."
+            ],
+            "pickup": "Hotel Rumi Punku, Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P1",
+            "supplierConfirmation": "VIA-MKT-682769",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "259,80 USD",
+            "passports": "FIC-X5855822, FIC-X4608583",
+            "nationalities": "Germany, France",
+            "expiry": "JULY 17 2029, JULY 10 2030",
+            "births": "MARCH 27 1979, AUGUST 20 1968",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "jue, 28 ene 2027",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Machu Picchu Overnight 2D/1N",
+            "subtitle": "Machu Picchu Overnight 2D/1N 07:00",
+            "traveler": "Liam Watanabe",
+            "paxText": "6 adultos",
+            "code": "BR-260128144",
+            "sent": "Enviada 16 ene 2027, 08:38 GMT−5",
+            "phone": "+1 ***-***-2603",
+            "names": [
+                  "Liam Watanabe (Adulto)",
+                  "Logan Watanabe (Adulto)",
+                  "Yuki Watanabe (Adulto)",
+                  "Kenji Watanabe (Adulto)",
+                  "Benjamin Watanabe (Adulto)",
+                  "Mia Watanabe (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Transfer to Ollantaytambo train station.",
+                  "Train tickets round trip.",
+                  "Hotel night in Machu Picchu Pueblo.",
+                  "Entrance ticket to Machu Picchu.",
+                  "Consettur bus tickets.",
+                  "Certified private guide."
+            ],
+            "pickup": "Palacio Manco Capac, Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P22",
+            "supplierConfirmation": "VIA-MKT-128458",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "3.899,40 USD",
+            "passports": "FIC-X5233875, FIC-X5502086, FIC-A6274279, FIC-X8678946, FIC-P4610551, FIC-X8173532",
+            "nationalities": "Netherlands, France, South Korea, Netherlands, United Kingdom, Australia",
+            "expiry": "JULY 23 2028, APRIL 28 2033, FEBRUARY 20 2032, FEBRUARY 28 2033, DECEMBER 15 2028, SEPTEMBER 3 2029",
+            "births": "AUGUST 1 1989, NOVEMBER 17 1991, NOVEMBER 24 1983, OCTOBER 28 1983, MAY 16 1980, OCTOBER 6 1977",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "sáb, 30 ene 2027",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "No disponible",
+            "available": false,
+            "title": "Tour Montaña de Colores – Vinicunca",
+            "subtitle": "Tour Montaña de Colores – Vinicunca 08:00",
+            "traveler": "Olivia Yamamoto",
+            "paxText": "2 adultos",
+            "code": "BR-260130145",
+            "sent": "Enviada 22 ene 2027, 15:38 GMT−5",
+            "phone": "+1 ***-***-7348",
+            "names": [
+                  "Olivia Yamamoto (Adulto)",
+                  "Charlotte Yamamoto (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Early hotel pick up.",
+                  "Tourist transport to the trailhead.",
+                  "Guided hike to Rainbow Mountain.",
+                  "Breakfast and lunch included.",
+                  "Permanent assistance during the tour."
+            ],
+            "pickup": "Palacio Manco Capac, Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P1",
+            "supplierConfirmation": "VIA-MKT-679634",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "259,80 USD",
+            "passports": "FIC-X4313835, FIC-A8139394",
+            "nationalities": "Canada, Netherlands",
+            "expiry": "DECEMBER 2 2029, APRIL 10 2031",
+            "births": "MAY 23 1978, JANUARY 24 1998",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "mar, 5 ene 2027",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Machu Picchu Full Day con tren Vistadome Observatory",
+            "subtitle": "Machu Picchu Full Day con tren Vistadome Observatory 08:00",
+            "traveler": "Joon Johnson",
+            "paxText": "2 adultos",
+            "code": "BR-260105146",
+            "sent": "Enviada 3 ene 2027, 15:45 GMT−5",
+            "phone": "+1 ***-***-7823",
+            "names": [
+                  "Joon Johnson (Adulto)",
+                  "Liam Johnson (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Transfer and pick up at Ollantaytambo train station.",
+                  "Train ticket to Machu Picchu category Vistadome Observatory or Expedition.",
+                  "Bus up and down to Machu Picchu.",
+                  "Entrance ticket to the citadel of Machu Picchu.",
+                  "Guided tour in the citadel of Machu Picchu by a certified guide.",
+                  "Permanent assistance and guidance 24/7 by an assigned travel agent."
+            ],
+            "pickup": "Casa Andina Standard Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P15",
+            "supplierConfirmation": "VIA-MKT-350500",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "1.251,80 USD",
+            "passports": "FIC-A9005518, FIC-P8109750",
+            "nationalities": "United Kingdom, United Kingdom",
+            "expiry": "FEBRUARY 10 2030, DECEMBER 25 2036",
+            "births": "NOVEMBER 19 1994, JUNE 25 1988",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "sáb, 9 ene 2027",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Bienvenida Ancestral – Cusco",
+            "subtitle": "Bienvenida Ancestral – Cusco 04:00",
+            "traveler": "Alice Wang",
+            "paxText": "4 adultos",
+            "code": "BR-260109147",
+            "sent": "Enviada 14 ene 2027, 18:05 GMT−5",
+            "phone": "+1 ***-***-8555",
+            "names": [
+                  "Alice Wang (Adulto)",
+                  "Nils Wang (Adulto)",
+                  "Charlotte Wang (Adulto)",
+                  "Emily Wang (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Private pick up and drop off from the hotel in Cusco.",
+                  "Ancestral welcome ceremony with Andean host.",
+                  "Pachamama offering materials included.",
+                  "Bilingual assistance before and during the activity."
+            ],
+            "pickup": "Antigua Casona San Blas, Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P20",
+            "supplierConfirmation": "VIA-MKT-468071",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "460,00 USD",
+            "passports": "FIC-P5930261, FIC-X9760662, FIC-X2686243, FIC-X3203879",
+            "nationalities": "South Korea, China, Canada, Canada",
+            "expiry": "JULY 25 2031, FEBRUARY 1 2033, DECEMBER 25 2033, APRIL 23 2031",
+            "births": "MARCH 28 1975, JANUARY 27 1985, NOVEMBER 28 1995, JANUARY 3 1964",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "mar, 12 ene 2027",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Valle Sagrado de los Incas",
+            "subtitle": "Valle Sagrado de los Incas 04:00",
+            "traveler": "Samuel Fischer",
+            "paxText": "2 adultos",
+            "code": "BR-260112148",
+            "sent": "Enviada 13 ene 2027, 13:12 GMT−5",
+            "phone": "+1 ***-***-4118",
+            "names": [
+                  "Samuel Fischer (Adulto)",
+                  "Daichi Fischer (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Hotel pick up in Cusco.",
+                  "Guided tour through the Sacred Valley.",
+                  "Transport in tourist vehicle.",
+                  "Local guide and permanent assistance.",
+                  "Drop off in Cusco or Ollantaytambo."
+            ],
+            "pickup": "Hotel Cusco Boutique, Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P6",
+            "supplierConfirmation": "VIA-MKT-290541",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "179,80 USD",
+            "passports": "FIC-A7782064, FIC-X5220884",
+            "nationalities": "USA, Netherlands",
+            "expiry": "APRIL 18 2028, APRIL 2 2030",
+            "births": "OCTOBER 9 1974, OCTOBER 8 1993",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "vie, 15 ene 2027",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Machu Picchu Full Day con tren Voyager",
+            "subtitle": "Machu Picchu Full Day con tren Voyager 07:00",
+            "traveler": "Akira Tanaka",
+            "paxText": "12 adultos",
+            "code": "BR-260115149",
+            "sent": "Enviada 10 ene 2027, 16:45 GMT−5",
+            "phone": "+1 ***-***-5146",
+            "names": [
+                  "Akira Tanaka (Adulto)",
+                  "Hannah Tanaka (Adulto)",
+                  "Noah Tanaka (Adulto)",
+                  "Logan Tanaka (Adulto)",
+                  "Thomas Tanaka (Adulto)",
+                  "Joon Tanaka (Adulto)",
+                  "Emily Tanaka (Adulto)",
+                  "Olivia Tanaka (Adulto)",
+                  "Joon Tanaka (Adulto)",
+                  "Amelia Tanaka (Adulto)",
+                  "Nils Tanaka (Adulto)",
+                  "Elena Tanaka (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Transfer and pick up at Ollantaytambo train station.",
+                  "Train ticket to Machu Picchu category Voyager or Expedition.",
+                  "Bus up and down to Machu Picchu.",
+                  "Entrance ticket to the citadel of Machu Picchu.",
+                  "Guided tour in the citadel of Machu Picchu by a certified guide."
+            ],
+            "pickup": "Sonesta Hotel Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P18",
+            "supplierConfirmation": "VIA-MKT-909126",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "6.718,80 USD",
+            "passports": "FIC-X5692783, FIC-P5022911, FIC-A1020595, FIC-A7404827, FIC-P7058640, FIC-P2438124, FIC-X4921083, FIC-X3770210, FIC-X2628450, FIC-P8324234, FIC-A4400422, FIC-X7833188",
+            "nationalities": "Japan, Netherlands, USA, Netherlands, Netherlands, China, Canada, Australia, Germany, South Korea, South Korea, United Kingdom",
+            "expiry": "SEPTEMBER 4 2030, DECEMBER 17 2031, DECEMBER 23 2031, FEBRUARY 13 2035, JULY 1 2030, APRIL 10 2030, JULY 15 2028, APRIL 8 2036, APRIL 3 2029, DECEMBER 7 2030, JULY 8 2029, FEBRUARY 23 2032",
+            "births": "MAY 8 1990, JUNE 4 1965, MARCH 14 1966, MAY 19 1983, MARCH 27 1968, NOVEMBER 3 1992, NOVEMBER 8 1977, AUGUST 25 1994, NOVEMBER 24 1991, MAY 21 1969, OCTOBER 15 1979, JUNE 14 1972",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "lun, 18 ene 2027",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Tour Montaña de Colores – Vinicunca",
+            "subtitle": "Tour Montaña de Colores – Vinicunca 08:00",
+            "traveler": "Amelia Wang",
+            "paxText": "12 adultos",
+            "code": "BR-260118150",
+            "sent": "Enviada 19 ene 2027, 15:38 GMT−5",
+            "phone": "+1 ***-***-9213",
+            "names": [
+                  "Amelia Wang (Adulto)",
+                  "Alice Wang (Adulto)",
+                  "George Wang (Adulto)",
+                  "George Wang (Adulto)",
+                  "Emma Wang (Adulto)",
+                  "Alice Wang (Adulto)",
+                  "Oliver Wang (Adulto)",
+                  "Haruto Wang (Adulto)",
+                  "Mei Wang (Adulto)",
+                  "Oliver Wang (Adulto)",
+                  "Benjamin Wang (Adulto)",
+                  "Erik Wang (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Early hotel pick up.",
+                  "Tourist transport to the trailhead.",
+                  "Guided hike to Rainbow Mountain.",
+                  "Breakfast and lunch included.",
+                  "Permanent assistance during the tour."
+            ],
+            "pickup": "Novotel Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P1",
+            "supplierConfirmation": "VIA-MKT-264496",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "1.318,80 USD",
+            "passports": "FIC-X7568112, FIC-A4263180, FIC-A9714798, FIC-P4510466, FIC-P4693955, FIC-A7382557, FIC-A1496223, FIC-P3404298, FIC-A5964656, FIC-X8016740, FIC-A4674563, FIC-X7661236",
+            "nationalities": "Australia, United Kingdom, Australia, Australia, Japan, Canada, Germany, United Kingdom, United Kingdom, Japan, Germany, United Kingdom",
+            "expiry": "APRIL 7 2032, DECEMBER 25 2033, APRIL 18 2032, SEPTEMBER 4 2036, JULY 11 2035, DECEMBER 14 2032, APRIL 2 2029, APRIL 26 2031, JULY 22 2035, DECEMBER 3 2029, JULY 7 2032, APRIL 16 2036",
+            "births": "MAY 17 1973, MARCH 11 1972, JUNE 6 1975, MAY 25 1995, MAY 5 1983, AUGUST 18 1979, AUGUST 12 1983, OCTOBER 20 1994, OCTOBER 27 1997, OCTOBER 26 1988, MARCH 23 1990, JANUARY 19 1975",
+            "action": "Cancelar reserva"
+      },
+      {
+            "date": "mié, 20 ene 2027",
+            "status": "Confirmada",
+            "statusClass": "ok",
+            "marketStatus": "Vigente",
+            "available": true,
+            "title": "Valle Sagrado de los Incas",
+            "subtitle": "Valle Sagrado de los Incas 11:00",
+            "traveler": "Henrik Bianchi",
+            "paxText": "3 adultos",
+            "code": "BR-260120151",
+            "sent": "Enviada 20 ene 2027, 14:05 GMT−5",
+            "phone": "+1 ***-***-9303",
+            "names": [
+                  "Henrik Bianchi (Adulto)",
+                  "Thomas Bianchi (Adulto)",
+                  "Yuna Bianchi (Adulto)"
+            ],
+            "language": "Inglés",
+            "services": [
+                  "Hotel pick up in Cusco.",
+                  "Guided tour through the Sacred Valley.",
+                  "Transport in tourist vehicle.",
+                  "Local guide and permanent assistance.",
+                  "Drop off in Cusco or Ollantaytambo."
+            ],
+            "pickup": "Casa Biru Hotel Boutique, Cusco",
+            "origin": "Viator Marketplace",
+            "productCode": "159709P6",
+            "supplierConfirmation": "VIA-MKT-914452",
+            "api": "Sí",
+            "cancellation": "No aplica",
+            "amount": "449,70 USD",
+            "passports": "FIC-X2809588, FIC-X2190816, FIC-A4200405",
+            "nationalities": "France, Australia, Netherlands",
+            "expiry": "DECEMBER 25 2035, FEBRUARY 26 2030, JULY 16 2032",
+            "births": "NOVEMBER 8 1985, MARCH 27 1975, JUNE 17 1985",
+            "action": "Cancelar reserva"
+      }
+];
 
-    function listItems(items) {
-      return (items || []).map(item => `<li>${item}</li>`).join("");
-    }
-
-
+    function listItems(items) { return (items || []).map(item => `<li>${item}</li>`).join(""); }
     function parseBookingDate(dateText) {
-      const months = {
-        "ene": 0, "feb": 1, "mar": 2, "abr": 3, "may": 4, "jun": 5,
-        "jul": 6, "ago": 7, "sep": 8, "sept": 8, "oct": 9, "nov": 10, "dic": 11
-      };
+      const months = {"ene":0,"feb":1,"mar":2,"abr":3,"may":4,"jun":5,"jul":6,"ago":7,"sep":8,"sept":8,"oct":9,"nov":10,"dic":11};
       const match = String(dateText || "").toLowerCase().match(/(\d{1,2})\s+([a-záéíóúñ]+)\s+(\d{4})/i);
       if (!match) return 0;
-      const day = Number(match[1]);
-      const month = months[match[2]] ?? 0;
-      const year = Number(match[3]);
-      return new Date(year, month, day).getTime();
+      return new Date(Number(match[3]), months[match[2]] ?? 0, Number(match[1])).getTime();
     }
+    function getAcceptedMarketplaceBookings() { try { return JSON.parse(localStorage.getItem("acceptedMarketplaceBookings") || "[]"); } catch(e) { return []; } }
+    function saveAcceptedMarketplaceBookings(items) { localStorage.setItem("acceptedMarketplaceBookings", JSON.stringify(items || [])); }
+    function getAllBookings() { return [...bookings, ...getAcceptedMarketplaceBookings()]; }
 
     function renderBookings() {
-      const list = document.getElementById("bookingsList");
-      if (!list) return;
-
-      const visibleBookings = [...bookings].sort((a, b) => parseBookingDate(a.date) - parseBookingDate(b.date));
-      list.innerHTML = visibleBookings.map((booking, index) => {
+      const list = document.getElementById("bookingsList"); if (!list) return;
+      const sortOrder = document.getElementById("bookingSort")?.value || "asc";
+      const visibleBookings = [...getAllBookings()].sort((a,b) => sortOrder === "desc" ? parseBookingDate(b.date)-parseBookingDate(a.date) : parseBookingDate(a.date)-parseBookingDate(b.date));
+      const counter = document.getElementById("bookingCount"); if (counter) counter.textContent = String(visibleBookings.length);
+      list.innerHTML = visibleBookings.map((booking,index) => {
         const expanded = index === 0 ? "show" : "";
         const toggleText = index === 0 ? "Ocultar detalles⌃" : "Mostrar detalles⌄";
         const badgeStyle = booking.statusClass === "ok" ? 'style="background:var(--primary);"' : "";
         return `
           <article class="booking-card">
             <div class="booking-top"><span>🗓️ ${booking.date}</span><span class="badge" ${badgeStyle}>${booking.status}</span></div>
-            <h2>${booking.title}</h2>
-            <div class="subtitle">${booking.subtitle}</div>
-            <div class="booking-grid">
-              <div><b>Viajero principal:</b> ${booking.traveler}<br><br>${booking.paxText}</div>
-              <div><b>${booking.code}</b><br><br>${booking.sent}</div>
-            </div>
+            <h2>${booking.title}</h2><div class="subtitle">${booking.subtitle}</div>
+            <div class="booking-grid"><div><b>Viajero principal:</b> ${booking.traveler}<br><br>${booking.paxText}</div><div><b>${booking.code}</b><br><br>${booking.sent}</div></div>
             <button class="details-toggle" type="button" data-booking="${index}">${toggleText}</button>
-
             <div class="booking-details ${expanded}" id="bookingDetails${index}">
               <div class="instant-label">CONFIRMACIÓN INSTANTÁNEA</div>
-              <div class="details-columns">
-                <div>
-                  <p class="detail-heading">Números de teléfono de clientes:</p>
-                  <p class="masked-phone">${booking.phone} <span class="show-link">◉ Show</span></p>
-
-                  <p class="detail-heading">Nombres de los viajeros:</p>
-                  <ul>${listItems(booking.names)}</ul>
-
-                  <p class="detail-heading">Idioma de la excursión o actividad:</p>
-                  <ul><li>${booking.language}</li></ul>
-
-                  <p class="detail-heading">Servicios incluidos:</p>
-                  <ul>${listItems(booking.services)}</ul>
-
-                  <p class="detail-heading">Datos del viajero:</p>
-                  <ul>
-                    <li><b>Número de pasaporte:</b> ${booking.passports}</li>
-                    <li><b>Nacionalidad del titular del pasaporte:</b> ${booking.nationalities}</li>
-                    <li><b>Fecha de caducidad del pasaporte:</b> ${booking.expiry}</li>
-                    <li><b>Fechas de nacimiento:</b> ${booking.births}</li>
-                  </ul>
-                </div>
-                <div>
-                  <p><b>Punto de recogida:</b> ${booking.pickup}</p>
-                  <p><b>Origen de las reservas:</b> ${booking.origin}</p>
-                  <p><b>Código del producto:</b> ${booking.productCode}</p>
-                  <p><b>Número de confirmación del proveedor:</b> ${booking.supplierConfirmation}</p>
-                  <p><b>Autorizada por la API:</b> ${booking.api}</p>
-                  <p><b>Solicitud de cancelación:</b> ${booking.cancellation}</p>
-                  <p><b>Importe que recibirá:</b> ${booking.amount}</p>
-                  <div class="booking-links">
-                    <a href="#">Contactar con el servicio de atención al cliente</a>
-                    <a href="#">Historial de reservas</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="booking-actions"><a href="#">${booking.action}</a></div>
+              <div class="details-columns"><div>
+                <p class="detail-heading">Números de teléfono de clientes:</p><p class="masked-phone">${booking.phone} <span class="show-link">◉ Show</span></p>
+                <p class="detail-heading">Nombres de los viajeros:</p><ul>${listItems(booking.names)}</ul>
+                <p class="detail-heading">Idioma de la excursión o actividad:</p><ul><li>${booking.language}</li></ul>
+                <p class="detail-heading">Servicios incluidos:</p><ul>${listItems(booking.services)}</ul>
+                <p class="detail-heading">Datos del viajero:</p><ul><li><b>Número de pasaporte:</b> ${booking.passports}</li><li><b>Nacionalidad del titular del pasaporte:</b> ${booking.nationalities}</li><li><b>Fecha de caducidad del pasaporte:</b> ${booking.expiry}</li><li><b>Fechas de nacimiento:</b> ${booking.births}</li></ul>
+              </div><div>
+                <p><b>Punto de recogida:</b> ${booking.pickup}</p><p><b>Origen de las reservas:</b> ${booking.origin}</p><p><b>Código del producto:</b> ${booking.productCode}</p><p><b>Número de confirmación del proveedor:</b> ${booking.supplierConfirmation}</p><p><b>Autorizada por la API:</b> ${booking.api}</p><p><b>Solicitud de cancelación:</b> ${booking.cancellation}</p><p><b>Importe que recibirá:</b> ${booking.amount}</p>
+                <div class="booking-links"><a href="#">Contactar con el servicio de atención al cliente</a><a href="#">Historial de reservas</a></div>
+              </div></div>
+            </div><div class="booking-actions"><a href="#">${booking.action}</a></div>
           </article>`;
-      }).join("") + `
-        <div class="pagination-row">
-          <div class="page-indicator"><span>‹</span><span class="current-page">1</span><span>›</span></div>
-          <div class="per-page"><span>Results per page:</span><span class="per-page-box">10⌄</span></div>
-        </div>`;
-
-      document.querySelectorAll(".details-toggle").forEach(button => {
-        button.addEventListener("click", () => {
-          const index = button.dataset.booking;
-          const details = document.getElementById(`bookingDetails${index}`);
-          const isOpen = details.classList.toggle("show");
-          button.textContent = isOpen ? "Ocultar detalles⌃" : "Mostrar detalles⌄";
-        });
-      });
+      }).join("") + `<div class="pagination-row"><div class="page-indicator"><span>‹</span><span class="current-page">1</span><span>›</span></div><div class="per-page"><span>Results per page:</span><span class="per-page-box">10⌄</span></div></div>`;
+      document.querySelectorAll(".details-toggle").forEach(button => button.addEventListener("click", () => { const index = button.dataset.booking; const details = document.getElementById(`bookingDetails${index}`); const isOpen = details.classList.toggle("show"); button.textContent = isOpen ? "Ocultar detalles⌃" : "Mostrar detalles⌄"; }));
     }
 
-    if (sessionStorage.getItem("viatorSupplierLoggedIn") !== "true") {
-      window.location.href = "index.html";
+    function renderMarketplace() {
+      const grid = document.getElementById("marketplaceGrid"); if (!grid) return;
+      const acceptedCodes = new Set(getAcceptedMarketplaceBookings().map(b => b.code));
+      grid.innerHTML = marketplaceBookings.map((item,index) => {
+        const alreadyAccepted = acceptedCodes.has(item.code); const unavailable = !item.available || alreadyAccepted; const badgeText = alreadyAccepted ? "Tomada" : item.marketStatus;
+        return `<article class="market-card ${unavailable ? "unavailable" : ""}" data-market="${index}"><div class="market-card-top"><span class="market-code">${item.code}</span><span class="market-badge ${unavailable ? "off" : ""}">${unavailable ? badgeText : "Vigente"}</span></div><h3>${item.title}</h3><div class="market-meta">📅 ${item.date}<br>👥 ${item.paxText}<br>🧳 Lead traveler: ${item.traveler}</div><div class="market-amount">${item.amount}</div></article>`;
+      }).join("");
+      document.querySelectorAll(".market-card").forEach(card => card.addEventListener("click", () => openMarketModal(Number(card.dataset.market))));
     }
+    function openMarketModal(index) {
+      const item = marketplaceBookings[index]; const modal = document.getElementById("marketModal"); const content = document.getElementById("marketModalContent"); if (!item || !modal || !content) return;
+      const acceptedCodes = new Set(getAcceptedMarketplaceBookings().map(b => b.code)); const unavailable = !item.available || acceptedCodes.has(item.code);
+      content.innerHTML = `<div class="booking-top"><span>🗓️ ${item.date}</span><span class="market-badge ${unavailable ? "off" : ""}">${unavailable ? (acceptedCodes.has(item.code) ? "Tomada" : "No disponible") : "Vigente"}</span></div><h2 class="market-modal-title">${item.title}</h2><div class="market-modal-sub">${item.subtitle}</div><div class="booking-grid"><div><b>Viajero principal:</b> ${item.traveler}<br><br>${item.paxText}</div><div><b>${item.code}</b><br><br>${item.sent}</div></div><div class="booking-details show" style="border-top:1px solid #e7eaee;margin-top:20px;padding-top:20px;"><div class="instant-label">CONFIRMACIÓN INSTANTÁNEA</div><div class="details-columns"><div><p class="detail-heading">Números de teléfono de clientes:</p><p class="masked-phone">${item.phone} <span class="show-link">◉ Show</span></p><p class="detail-heading">Nombres de los viajeros:</p><ul>${listItems(item.names)}</ul><p class="detail-heading">Idioma de la excursión o actividad:</p><ul><li>${item.language}</li></ul><p class="detail-heading">Servicios incluidos:</p><ul>${listItems(item.services)}</ul><p class="detail-heading">Datos del viajero:</p><ul><li><b>Número de pasaporte:</b> ${item.passports}</li><li><b>Nacionalidad del titular del pasaporte:</b> ${item.nationalities}</li><li><b>Fecha de caducidad del pasaporte:</b> ${item.expiry}</li><li><b>Fechas de nacimiento:</b> ${item.births}</li></ul></div><div><p><b>Punto de recogida:</b> ${item.pickup}</p><p><b>Origen de las reservas:</b> ${item.origin}</p><p><b>Código del producto:</b> ${item.productCode}</p><p><b>Número de confirmación del proveedor:</b> ${item.supplierConfirmation}</p><p><b>Autorizada por la API:</b> ${item.api}</p><p><b>Solicitud de cancelación:</b> ${item.cancellation}</p><p><b>Importe que recibirá:</b> ${item.amount}</p></div></div></div><div class="market-modal-actions"><button class="solid-btn danger-light" id="discardMarket" type="button">Descartar</button><button class="solid-btn" id="takeMarket" type="button" ${unavailable ? "disabled style='opacity:.55;cursor:not-allowed;'" : ""}>Tomar reserva</button></div>`;
+      modal.classList.add("show"); modal.setAttribute("aria-hidden","false"); document.getElementById("discardMarket").onclick = closeMarketModal; document.getElementById("takeMarket").onclick = () => { if (unavailable) return; const accepted = getAcceptedMarketplaceBookings(); accepted.push({...item, origin:"Viator", status:"Confirmada", statusClass:"ok", action:"Cancelar reserva"}); saveAcceptedMarketplaceBookings(accepted); closeMarketModal(); renderMarketplace(); renderBookings(); setActivePage("reservas"); };
+    }
+    function closeMarketModal() { const modal = document.getElementById("marketModal"); if (!modal) return; modal.classList.remove("show"); modal.setAttribute("aria-hidden","true"); }
 
+    if (sessionStorage.getItem("viatorSupplierLoggedIn") !== "true") { window.location.href = "index.html"; }
     const nav = document.getElementById("mainNav");
     const navButtons = [...document.querySelectorAll(".nav button[data-page]")];
     const sections = [...document.querySelectorAll(".page-section")];
     const accountBtn = document.getElementById("accountBtn");
     const accountMenu = document.getElementById("accountMenu");
     const mobileMenuBtn = document.getElementById("mobileMenuBtn");
-
     function setActivePage(page) {
       sections.forEach(section => section.classList.toggle("active", section.dataset.section === page));
       navButtons.forEach(btn => btn.classList.toggle("active", btn.dataset.page === page));
-      accountMenu.classList.remove("show");
-      accountBtn.classList.toggle("active", page === "panel");
-      nav.classList.remove("show");
-      if (page === "productos" || page === "rendimiento") {
-        document.getElementById("bokunBanner").classList.add("show");
-      } else {
-        document.getElementById("bokunBanner").classList.remove("show");
-      }
+      accountMenu?.classList.remove("show"); accountBtn?.classList.toggle("active", page === "panel"); nav?.classList.remove("show");
+      const banner = document.getElementById("bokunBanner"); if (banner) { if (page === "productos" || page === "rendimiento") banner.classList.add("show"); else banner.classList.remove("show"); }
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
-
-    function goPage(page) { setActivePage(page); }
-    window.goPage = goPage;
-
+    function goPage(page) { setActivePage(page); } window.goPage = goPage;
     navButtons.forEach(btn => btn.addEventListener("click", () => setActivePage(btn.dataset.page)));
     document.querySelectorAll(".account-menu button[data-page]").forEach(btn => btn.addEventListener("click", () => setActivePage(btn.dataset.page)));
-
-    accountBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      accountMenu.classList.toggle("show");
-    });
-
-    document.addEventListener("click", (e) => {
-      if (!accountMenu.contains(e.target) && e.target !== accountBtn) accountMenu.classList.remove("show");
-    });
-
-    mobileMenuBtn.addEventListener("click", () => nav.classList.toggle("show"));
-
-    document.getElementById("logoutBtn").addEventListener("click", () => {
-      sessionStorage.removeItem("viatorSupplierLoggedIn");
-      sessionStorage.removeItem("viatorSupplierUser");
-      window.location.href = "index.html";
-    });
-
-    document.getElementById("closeBokun").addEventListener("click", () => {
-      document.getElementById("bokunBanner").classList.remove("show");
-    });
-
-    renderBookings();
+    accountBtn?.addEventListener("click", e => { e.stopPropagation(); accountMenu.classList.toggle("show"); });
+    document.addEventListener("click", e => { if (accountMenu && !accountMenu.contains(e.target) && e.target !== accountBtn) accountMenu.classList.remove("show"); });
+    mobileMenuBtn?.addEventListener("click", () => nav.classList.toggle("show"));
+    document.getElementById("logoutBtn")?.addEventListener("click", () => { sessionStorage.removeItem("viatorSupplierLoggedIn"); sessionStorage.removeItem("viatorSupplierUser"); window.location.href="index.html"; });
+    document.getElementById("closeBokun")?.addEventListener("click", () => document.getElementById("bokunBanner")?.classList.remove("show"));
+    document.getElementById("bookingSort")?.addEventListener("change", renderBookings);
+    document.getElementById("marketClose")?.addEventListener("click", closeMarketModal);
+    document.getElementById("marketModal")?.addEventListener("click", event => { if (event.target.id === "marketModal") closeMarketModal(); });
+    renderBookings(); renderMarketplace();
   </script>
+
 </body>
 </html>
