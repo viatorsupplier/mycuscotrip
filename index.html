@@ -306,6 +306,45 @@
     }
   </style>
 
+
+    <style>
+      /* v19 only image logo */
+      .brand-logo { display: none !important; }
+      .brand-logo::after,
+      .logo::after { content: none !important; display: none !important; }
+      .brand {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+      }
+      .logo {
+        min-width: auto !important;
+        width: auto !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 0 !important;
+        line-height: 0 !important;
+        letter-spacing: 0 !important;
+      }
+      .login-logo-img {
+        display: block !important;
+        height: 64px !important;
+        max-height: 64px !important;
+        width: auto !important;
+        object-fit: contain !important;
+        margin: 0 auto !important;
+      }
+      .nav-logo-img,
+      .logo img {
+        display: block !important;
+        height: 42px !important;
+        max-height: 42px !important;
+        width: auto !important;
+        object-fit: contain !important;
+      }
+    </style>
+    
 </head>
 <body>
   <main class="page">
@@ -322,9 +361,7 @@
         </div>
       </div>
 
-      <div class="brand" aria-label="Viator">
-        <span class="brand-logo">viator</span>
-      </div>
+      <div class="brand" aria-label="Logo"><img src="assets/logo-v1.png" alt="Logo" class="login-logo-img"></div>
 
       <h1 class="title">Viator Supplier Log in</h1>
 
